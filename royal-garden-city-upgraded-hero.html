@@ -1,0 +1,450 @@
+<!-- =========================================================
+ ROYAL GARDEN CITY — SCROLL-TO-BUILD ARCHITECTURAL HERO
+ WordPress HTML block • Three.js • Responsive • Reduced-motion aware
+ Existing modal copy and contact URL preserved.
+========================================================= -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<div class="rgc-hero-container" id="rgcHero">
+  <div class="rgc-scroll-chassis" id="rgcScrollChassis">
+    <div class="rgc-sticky-viewport" id="rgcViewport">
+      <canvas id="rgcWebGlCanvas" aria-label="Royal Garden City architectural development animation"></canvas>
+      <div class="rgc-sky-glow" aria-hidden="true"></div>
+      <div class="rgc-cinematic-vignette" aria-hidden="true"></div>
+
+      <div class="rgc-top-caption" aria-hidden="true">
+        <span class="rgc-caption-line"></span>
+        <span>LAND · DEVELOPMENT · INTERIORS</span>
+      </div>
+
+      <div class="rgc-hud-status" aria-live="polite">
+        <span class="rgc-hud-indicator"></span>
+        <span class="rgc-hud-txt">LEVEL <b id="rgcFloorCounter">00</b> / 24</span>
+      </div>
+
+      <div class="rgc-phase-label" id="rgcPhaseLabel" aria-live="polite">THE LANDMARK BEGINS WITH THE LAND</div>
+
+      <div class="rgc-mouse-cue" id="rgcMouseCue">
+        <span>SCROLL TO CONSTRUCT</span>
+        <div class="rgc-cue-bar"><div class="rgc-cue-drop"></div></div>
+      </div>
+
+      <div class="rgc-center-modal" id="rgcCenterModal" aria-hidden="true">
+        <div class="rgc-modal-card">
+          <span class="rgc-modal-badge">A NEW LANDMARK RISES</span>
+          <h2 class="rgc-modal-title">ROYAL GARDEN CITY</h2>
+          <p class="rgc-modal-subtitle">Jasimuddin Road, Uttara &bull; Dhaka</p>
+          <div class="rgc-modal-divider"></div>
+          <p class="rgc-modal-description">
+            Architectural excellence, panoramic curtain-wall residences &amp; bespoke commercial suites engineered for the future.
+          </p>
+          <a href="https://royalgardencity.com/contact/" class="rgc-modal-btn">
+            <span>Get Consultation Now</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+/* All selectors are scoped to the hero except the optional transparent-header rules below. */
+.rgc-hero-container, .rgc-hero-container * { box-sizing:border-box; }
+.rgc-hero-container {
+  position:relative!important; width:100vw!important; max-width:none!important;
+  left:50%!important; margin-left:-50vw!important; margin-right:-50vw!important;
+  padding:0!important; overflow:clip!important; background:#07111d!important;
+  color:#fff; font-family:'Inter',Arial,sans-serif!important; isolation:isolate;
+}
+.rgc-scroll-chassis { position:relative; width:100%; height:390vh; min-height:2100px; background:#07111d; }
+.rgc-sticky-viewport {
+  position:sticky; top:0; width:100%; height:100vh; height:100svh; min-height:520px;
+  overflow:hidden; background:linear-gradient(180deg,#8fb8d4 0%,#e6c8a0 52%,#243d4b 100%);
+}
+#rgcWebGlCanvas { position:absolute; inset:0; display:block; width:100%; height:100%; z-index:1; touch-action:pan-y; outline:0; }
+.rgc-sky-glow { position:absolute; z-index:2; inset:0; pointer-events:none; background:radial-gradient(ellipse at 72% 27%,rgba(255,225,165,.24),transparent 34%),linear-gradient(180deg,rgba(12,27,45,.02),rgba(3,9,17,.28)); }
+.rgc-cinematic-vignette { position:absolute; inset:0; z-index:3; pointer-events:none; background:linear-gradient(180deg,rgba(3,10,20,.05) 0%,transparent 30%,rgba(2,7,14,.08) 58%,rgba(2,7,14,.60) 100%),radial-gradient(ellipse at center,transparent 42%,rgba(3,8,15,.25) 100%); }
+.rgc-top-caption { position:absolute; z-index:5; top:clamp(95px,13vh,145px); left:clamp(22px,6vw,100px); display:flex; align-items:center; gap:12px; color:rgba(255,255,255,.82); font-size:10px; letter-spacing:.23em; font-weight:600; text-shadow:0 2px 14px #10202d; }
+.rgc-caption-line { width:34px; height:1px; background:#d9bd8b; display:inline-block; }
+.rgc-hud-status { position:absolute; z-index:6; left:clamp(16px,3vw,34px); bottom:clamp(18px,3vh,32px); display:inline-flex; align-items:center; gap:10px; padding:9px 15px; border:1px solid rgba(225,197,151,.32); border-radius:999px; background:rgba(7,17,29,.58); -webkit-backdrop-filter:blur(14px); backdrop-filter:blur(14px); pointer-events:none; }
+.rgc-hud-indicator { width:6px; height:6px; flex:0 0 6px; border-radius:50%; background:#dfbd83; box-shadow:0 0 12px rgba(223,189,131,.85); }
+.rgc-hud-txt { color:#c6d0da; font-size:10px; font-weight:600; letter-spacing:.18em; }
+.rgc-hud-txt b { color:#fff; font-size:13px; letter-spacing:.04em; }
+.rgc-phase-label { position:absolute; z-index:6; left:50%; bottom:clamp(30px,5vh,58px); transform:translateX(-50%); max-width:72%; text-align:center; color:rgba(255,255,255,.88); font-size:10px; font-weight:600; letter-spacing:.2em; text-shadow:0 2px 12px rgba(0,0,0,.65); white-space:nowrap; pointer-events:none; transition:opacity .25s ease; }
+.rgc-mouse-cue { position:absolute; z-index:6; right:clamp(18px,3vw,36px); bottom:clamp(18px,3vh,32px); display:flex; flex-direction:column; align-items:center; gap:8px; pointer-events:none; transition:opacity .3s ease; }
+.rgc-mouse-cue span { color:#d1d9e1; font-size:9px; letter-spacing:.19em; font-weight:600; text-shadow:0 2px 10px #07111d; }
+.rgc-cue-bar { width:1px; height:25px; background:rgba(255,255,255,.25); overflow:hidden; }
+.rgc-cue-drop { width:100%; height:100%; background:linear-gradient(180deg,#e3c18b,transparent); animation:rgcDrop 1.5s ease-in-out infinite; }
+@keyframes rgcDrop { from{transform:translateY(-100%)} to{transform:translateY(100%)} }
+.rgc-center-modal { position:absolute; inset:0; z-index:10; display:flex; align-items:center; justify-content:center; padding:clamp(16px,4vw,36px); opacity:0; transform:translateY(18px) scale(.975); pointer-events:none; transition:opacity .65s cubic-bezier(.16,1,.3,1),transform .65s cubic-bezier(.16,1,.3,1); }
+.rgc-center-modal.is-active { opacity:1; transform:translateY(0) scale(1); pointer-events:auto; }
+.rgc-modal-card { width:min(540px,100%); padding:clamp(26px,4vw,42px) clamp(20px,4vw,36px); text-align:center; border:1px solid rgba(218,190,145,.48); border-radius:14px; background:rgba(7,15,27,.82); -webkit-backdrop-filter:blur(22px); backdrop-filter:blur(22px); box-shadow:0 28px 90px rgba(0,0,0,.4),0 0 45px rgba(218,190,145,.08); }
+.rgc-modal-badge { display:inline-block; margin-bottom:13px; color:#ddbd8a; font-family:'Cinzel',serif; font-size:10px; font-weight:700; letter-spacing:.25em; }
+.rgc-modal-title { margin:0 0 10px!important; color:#fff!important; font-family:'Cinzel',Georgia,serif!important; font-size:clamp(24px,3.2vw,38px)!important; line-height:1.2!important; font-weight:700!important; letter-spacing:.1em!important; text-shadow:0 2px 18px rgba(0,0,0,.5); }
+.rgc-modal-subtitle { margin:0!important; color:#b7c7d8!important; font-size:12px!important; line-height:1.6!important; letter-spacing:.13em!important; text-transform:uppercase; }
+.rgc-modal-divider { width:58px; height:1px; margin:22px auto; background:linear-gradient(90deg,transparent,#ddbd8a,transparent); }
+.rgc-modal-description { margin:0 0 26px!important; color:#d0d8e0!important; font-size:14px!important; line-height:1.75!important; font-weight:400!important; }
+.rgc-modal-btn { display:inline-flex; align-items:center; justify-content:center; gap:12px; min-height:50px; padding:14px 25px; border:1px solid rgba(255,255,255,.18); border-radius:5px; background:linear-gradient(135deg,#f0d9b2,#c5a475 62%,#a78352); color:#111722!important; font-family:'Cinzel',Georgia,serif; font-size:11px; font-weight:700; letter-spacing:.12em; text-decoration:none!important; box-shadow:0 8px 24px rgba(197,164,117,.22); transition:transform .25s ease,filter .25s ease,box-shadow .25s ease; }
+.rgc-modal-btn:hover { transform:translateY(-2px); filter:brightness(1.08); box-shadow:0 12px 30px rgba(197,164,117,.3); }
+@media (max-width:767px) {
+  .rgc-scroll-chassis { height:330vh; min-height:1900px; }
+  .rgc-sticky-viewport { min-height:480px; }
+  .rgc-top-caption { top:clamp(84px,12vh,118px); left:20px; font-size:8px; letter-spacing:.16em; }
+  .rgc-caption-line { width:22px; }
+  .rgc-phase-label { bottom:68px; max-width:90%; width:90%; white-space:normal; font-size:8px; line-height:1.6; letter-spacing:.14em; }
+  .rgc-hud-status { bottom:17px; left:14px; padding:8px 11px; }
+  .rgc-hud-txt { font-size:9px; letter-spacing:.12em; }
+  .rgc-mouse-cue { right:15px; bottom:17px; }
+  .rgc-mouse-cue span { font-size:7px; letter-spacing:.1em; }
+  .rgc-modal-subtitle { font-size:10px!important; letter-spacing:.08em!important; }
+  .rgc-modal-description { font-size:13px!important; }
+  .rgc-modal-btn { width:100%; padding:14px 15px; font-size:10px; }
+}
+@media (max-height:600px) and (min-width:768px) {
+  .rgc-top-caption { top:78px; }
+  .rgc-modal-card { padding:22px 28px; }
+  .rgc-modal-divider { margin:14px auto; }
+  .rgc-modal-description { margin-bottom:16px!important; }
+}
+@media (prefers-reduced-motion:reduce) {
+  .rgc-cue-drop { animation:none; }
+  .rgc-center-modal,.rgc-modal-btn { transition:none; }
+}
+/* Optional transparent-header treatment for common WordPress/Astra headers. */
+body:has(#rgcHero) header.site-header,
+body:has(#rgcHero) #masthead,
+body:has(#rgcHero) .ast-primary-header-bar,
+body:has(#rgcHero) .ast-main-header-wrap,
+body:has(#rgcHero) .elementor-location-header {
+  background:transparent!important; box-shadow:none!important;
+}
+</style>
+
+<script>
+(function () {
+  'use strict';
+  var scriptId = 'rgc-threejs-r128';
+  function loadThree(done) {
+    if (window.THREE) { done(); return; }
+    var existing = document.getElementById(scriptId);
+    if (existing) { existing.addEventListener('load', done, { once:true }); return; }
+    var s = document.createElement('script');
+    s.id = scriptId;
+    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js';
+    s.onload = done;
+    s.onerror = function () { console.warn('Royal Garden City: Three.js could not be loaded.'); };
+    document.head.appendChild(s);
+  }
+  function init() {
+    var chassis = document.getElementById('rgcScrollChassis');
+    var canvas = document.getElementById('rgcWebGlCanvas');
+    var viewport = document.getElementById('rgcViewport');
+    var modal = document.getElementById('rgcCenterModal');
+    var counter = document.getElementById('rgcFloorCounter');
+    var cue = document.getElementById('rgcMouseCue');
+    var phaseLabel = document.getElementById('rgcPhaseLabel');
+    if (!chassis || !canvas || !window.THREE || canvas.dataset.rgcReady) return;
+    canvas.dataset.rgcReady = '1';
+
+    var THREE = window.THREE;
+    var renderer;
+    try {
+      renderer = new THREE.WebGLRenderer({ canvas:canvas, antialias:true, alpha:false, powerPreference:'high-performance' });
+    } catch (e) {
+      console.warn('Royal Garden City: WebGL is unavailable.', e);
+      if (phaseLabel) phaseLabel.textContent = 'ROYAL GARDEN CITY';
+      return;
+    }
+    var reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var dprCap = window.innerWidth < 768 ? 1.5 : 2;
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, dprCap));
+    renderer.setClearColor(0x9dbed0, 1);
+    renderer.outputEncoding = THREE.sRGBEncoding;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.12;
+    if (renderer.shadowMap) {
+      renderer.shadowMap.enabled = true;
+      renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    }
+
+    var scene = new THREE.Scene();
+    scene.fog = new THREE.Fog(0xb4c8ce, 42, 105);
+    var camera = new THREE.PerspectiveCamera(38, 1, 0.1, 180);
+    var GOLD = 0xc8a878, dark = 0x152635, floorCount = 24, floorHeight = 0.92, baseY = 0.42;
+    var ambient = new THREE.HemisphereLight(0xe3f0ff, 0x5b4938, 1.5); scene.add(ambient);
+    var sunLight = new THREE.DirectionalLight(0xffedcf, 2.6);
+    sunLight.position.set(-18, 28, 16); sunLight.castShadow = true;
+    sunLight.shadow.mapSize.set(1024,1024);
+    sunLight.shadow.camera.left = -22; sunLight.shadow.camera.right = 22;
+    sunLight.shadow.camera.top = 35; sunLight.shadow.camera.bottom = -22;
+    scene.add(sunLight);
+    var fillLight = new THREE.DirectionalLight(0x9bc8ee, 0.7); fillLight.position.set(14,12,-20); scene.add(fillLight);
+    var warmLight = new THREE.PointLight(0xffc987, 0.8, 65); warmLight.position.set(-9,9,8); scene.add(warmLight);
+
+    var mats = {
+      land: new THREE.MeshStandardMaterial({color:0x7c9878, roughness:1}),
+      grass: new THREE.MeshStandardMaterial({color:0x466c54, roughness:1}),
+      road: new THREE.MeshStandardMaterial({color:0x394750, roughness:.94}),
+      concrete: new THREE.MeshStandardMaterial({color:0xc8c9c2, roughness:.82}),
+      concreteDark: new THREE.MeshStandardMaterial({color:0x7d8b8f, roughness:.75}),
+      gold: new THREE.MeshStandardMaterial({color:GOLD, metalness:.72, roughness:.28}),
+      glass: new THREE.MeshPhysicalMaterial({color:0x8eb8cd, metalness:.38, roughness:.17, clearcoat:1, clearcoatRoughness:.12, transparent:true, opacity:.91}),
+      glassDark: new THREE.MeshStandardMaterial({color:0x18364a, metalness:.42, roughness:.22}),
+      windowGlow: new THREE.MeshStandardMaterial({color:0xf2d4a0, emissive:0xe4a95c, emissiveIntensity:.22, roughness:.35}),
+      white: new THREE.MeshStandardMaterial({color:0xe7e2d8, roughness:.6}),
+      leaf: new THREE.MeshStandardMaterial({color:0x3d7558, roughness:.95}),
+      trunk: new THREE.MeshStandardMaterial({color:0x6b4b35, roughness:1})
+    };
+    var ground = new THREE.Mesh(new THREE.PlaneGeometry(180,180), mats.land);
+    ground.rotation.x = -Math.PI/2; ground.position.y = -0.12; ground.receiveShadow = true; scene.add(ground);
+
+    // Site boundary and a small, understated road network.
+    var site = new THREE.Group(); scene.add(site);
+    var plot = new THREE.Mesh(new THREE.BoxGeometry(19,.12,16), new THREE.MeshStandardMaterial({color:0x789078, roughness:1}));
+    plot.position.set(0,0,0); plot.receiveShadow = true; site.add(plot);
+    function box(parent, w,h,d, material,x,y,z, cast) {
+      var m = new THREE.Mesh(new THREE.BoxGeometry(w,h,d), material);
+      m.position.set(x,y,z); if (cast !== false) m.castShadow = true; m.receiveShadow = true; parent.add(m); return m;
+    }
+    box(site, 19.2,.13,.13,mats.gold,0,.04,-8);
+    box(site, 19.2,.13,.13,mats.gold,0,.04,8);
+    box(site, .13,.13,16,mats.gold,-9.5,.04,0);
+    box(site, .13,.13,16,mats.gold,9.5,.04,0);
+    box(scene, 180,.05,7,mats.road,0,-.045,13,false);
+    box(scene, 7,.05,180,mats.road,-14,-.045,0,false);
+    var laneMat = new THREE.MeshBasicMaterial({color:0xd9d0b6, transparent:true, opacity:.48});
+    for (var k=-80;k<80;k+=8) {
+      var lane = new THREE.Mesh(new THREE.BoxGeometry(.12,.012,3.5),laneMat);
+      lane.position.set(0,-.012,k+13); scene.add(lane);
+    }
+
+    // Sun disc, atmospheric halo and soft, stylized clouds.
+    var sunGroup = new THREE.Group(); scene.add(sunGroup);
+    var sunDisc = new THREE.Mesh(new THREE.SphereGeometry(2.15,40,32), new THREE.MeshBasicMaterial({color:0xffe0a0}));
+    sunGroup.add(sunDisc);
+    var halo = new THREE.Mesh(new THREE.SphereGeometry(2.85,32,24), new THREE.MeshBasicMaterial({color:0xffd08a, transparent:true, opacity:.13, depthWrite:false}));
+    sunGroup.add(halo);
+    function makeCloud(x,y,z,scale) {
+      var g = new THREE.Group();
+      var cm = new THREE.MeshStandardMaterial({color:0xf4eee2, transparent:true, opacity:.52, roughness:1});
+      [[0,0,0,1.5],[1.2,.15,0,1.05],[-1.1,.05,.1,1.0],[.25,.45,.05,.95]].forEach(function(a){
+        var p = new THREE.Mesh(new THREE.SphereGeometry(a[3],16,12),cm);
+        p.position.set(a[0],a[1],a[2]); p.scale.y=.42; g.add(p);
+      });
+      g.position.set(x,y,z); g.scale.setScalar(scale); scene.add(g); return g;
+    }
+    var clouds=[makeCloud(-13,17,-22,1.1),makeCloud(12,20,-27,.8),makeCloud(19,14,-17,.65)];
+
+    // Procedural planting: trunk + layered foliage, with a compact mobile-friendly count.
+    var trees = new THREE.Group(); scene.add(trees);
+    function makeTree(x,z,s) {
+      var g = new THREE.Group();
+      var tr = new THREE.Mesh(new THREE.CylinderGeometry(.09*s,.15*s,1.05*s,7),mats.trunk);
+      tr.position.y=.53*s; tr.castShadow=true; g.add(tr);
+      [[0,1.25,0,.62],[-.22,1.55,.05,.48],[.2,1.65,-.04,.44],[0,1.9,0,.34]].forEach(function(a){
+        var f = new THREE.Mesh(new THREE.IcosahedronGeometry(a[3]*s,1),mats.leaf);
+        f.position.set(a[0]*s,a[1]*s,a[2]*s); f.castShadow=true; g.add(f);
+      });
+      g.position.set(x,.02,z); trees.add(g); return g;
+    }
+    var treePositions=[[-8,-6,1.0],[-7,-2,.82],[-8,3,.9],[8,-6,.95],[7,-2,.8],[8,3,.92],[-4,6,.7],[4,6,.72],[-12,7,1.1],[-18,5,1.2],[16,8,1.1],[20,-3,1.2]];
+    treePositions.forEach(function(t){makeTree(t[0],t[1],t[2]);});
+
+    // Low-rise context buildings create a believable neighborhood skyline.
+    var neighbors = new THREE.Group(); scene.add(neighbors);
+    for (var n=0;n<10;n++) {
+      var side=n%2===0?-1:1, z=-19+n*4.2, h=2.8+(n%4)*1.3, w=2.6+(n%3)*.7;
+      var b=box(neighbors,w,h,2.8,n%3===0?mats.white:mats.concreteDark,side*(13+(n%3)*2),h/2-.05,z,false);
+      b.material = b.material.clone();
+      var winMat=new THREE.MeshBasicMaterial({color:0xb5c9ce,transparent:true,opacity:.48});
+      for(var wi=0;wi<3;wi++){
+        var win=new THREE.Mesh(new THREE.BoxGeometry(.32,.45,.025),winMat);
+        win.position.set(b.position.x+(wi-1)*.65,h*.48,z+1.42); neighbors.add(win);
+      }
+    }
+
+    // Main tower root. Each floor is a separate animated assembly.
+    var tower = new THREE.Group(); scene.add(tower);
+    var podium = new THREE.Group(); tower.add(podium);
+    var podiumBase = box(podium,8.6,.48,7.2,mats.concreteDark,0,.24,0);
+    var podiumGlass = box(podium,8.1,1.55,6.7,mats.glass,0,1.15,0);
+    box(podium,8.8,.16,7.4,mats.white,0,1.94,0);
+    box(podium,8.2,.1,6.8,mats.gold,0,2.03,0);
+    // Retail entrance bays and vertical framing on podium.
+    for(var px=-3.2;px<=3.21;px+=1.6) {
+      box(podium,.075,1.35,.09,mats.gold,px,1.13,3.37);
+      box(podium,1.35,.07,.09,mats.gold,px,1.82,3.37);
+    }
+    // Roof garden planter boxes and greenery.
+    var planters=[];
+    for(var pi=-3;pi<=3;pi+=2) {
+      planters.push(box(podium,1.15,.32,.65,mats.grass,pi,2.2,2.75));
+    }
+
+    var floors=[];
+    var slabMat=new THREE.MeshStandardMaterial({color:0xd5d9d7,roughness:.5,metalness:.18});
+    var mullionMat=new THREE.MeshStandardMaterial({color:0x9caaad,metalness:.7,roughness:.26});
+    var balconyMat=new THREE.MeshStandardMaterial({color:0xe1e2dc,roughness:.4,metalness:.12});
+    for(var i=0;i<floorCount;i++) {
+      var width = i<4?6.8:(i<18?5.35:(i<22?4.35:3.4));
+      var depth = i<4?6.0:(i<18?4.8:(i<22?3.9:3.0));
+      var g=new THREE.Group();
+      var slab=box(g,width+.28,.105,depth+.28,slabMat,0,-floorHeight/2+.055,0);
+      var shell=box(g,width,floorHeight-.09,depth,mats.glass,0,0,0);
+      // Fine vertical mullions across front and sides.
+      for(var mx=-width/2+.12;mx<=width/2-.1;mx+=.72) {
+        box(g,.045,floorHeight-.12,.055,mullionMat,mx,0,depth/2+.025,false);
+        box(g,.045,floorHeight-.12,.055,mullionMat,mx,0,-depth/2-.025,false);
+      }
+      for(var mz=-depth/2+.12;mz<=depth/2-.1;mz+=.72) {
+        box(g,.055,floorHeight-.12,.045,mullionMat,width/2+.025,0,mz,false);
+        box(g,.055,floorHeight-.12,.045,mullionMat,-width/2-.025,0,mz,false);
+      }
+      // Thin horizontal frame bands and alternating balcony ledges.
+      box(g,width+.08,.045,.07,mats.gold,0,floorHeight*.38,depth/2+.045,false);
+      if(i%2===0 && i<20) {
+        box(g,width*.57,.07,.65,balconyMat,width*.08,-.12,depth/2+.3,false);
+        box(g,width*.57,.24,.035,mullionMat,width*.08,.015,depth/2+.61,false);
+        for(var bx=-width*.18;bx<width*.34;bx+=.42) box(g,.025,.22,.025,mullionMat,bx,.015,depth/2+.61,false);
+      }
+      // Subtle warm interior window panels, staggered for natural variation.
+      for(var wx=-width/2+.38;wx<width/2-.1;wx+=.72) {
+        if((Math.floor((wx+width)*3)+i)%4===0) {
+          box(g,.35,.42,.025,mats.windowGlow,wx,.02,depth/2+.052,false);
+        }
+      }
+      g.position.y=baseY+i*floorHeight+floorHeight/2;
+      tower.add(g);
+      floors.push({group:g,baseY:g.position.y,glass:shell,slab:slab});
+    }
+
+    // Architectural crown and spire.
+    var crown=new THREE.Group(); tower.add(crown);
+    box(crown,3.5,.32,3.0,mats.concreteDark,0,0,0);
+    box(crown,2.8,.16,2.4,mats.gold,0,.22,0);
+    var crownGlass=box(crown,2.55,1.15,2.15,mats.glass,0,.86,0);
+    box(crown,3.2,.12,2.7,mats.white,0,1.48,0);
+    var spire=new THREE.Mesh(new THREE.CylinderGeometry(.035,.09,2.3,12),mats.gold); spire.position.y=2.65; crown.add(spire);
+    var beacon=new THREE.Mesh(new THREE.SphereGeometry(.09,12,10),new THREE.MeshBasicMaterial({color:0xff604d})); beacon.position.y=3.82; crown.add(beacon);
+    var towerHeight=baseY+floorCount*floorHeight+3.8;
+    crown.position.y=towerHeight;
+
+    // Construction accents: cranes appear briefly during the build phase.
+    var cranes=new THREE.Group(); scene.add(cranes);
+    var craneMat=new THREE.MeshStandardMaterial({color:0xd5b57c,metalness:.55,roughness:.4});
+    function makeCrane(x,z,scale) {
+      var g=new THREE.Group();
+      var mast=box(g,.12,8*scale,.12,craneMat,0,4*scale,0);
+      box(g,5*scale,.12,.12,craneMat,1.9*scale,7.7*scale,0);
+      box(g,.09,1.5*scale,.09,craneMat,4.2*scale,7*scale,0);
+      box(g,.7*scale,.25,.7*scale,mats.concreteDark,0,.12,0);
+      g.position.set(x,0,z); cranes.add(g); return g;
+    }
+    var crane1=makeCrane(-5.3,-1,.72), crane2=makeCrane(5.1,-1,.58);
+
+    function clamp(v,a,b){return Math.max(a,Math.min(b,v));}
+    function smooth(t){t=clamp(t,0,1);return t*t*(3-2*t);}
+    var target=0,current=0,visible=true,raf=0,lastPhase=-1;
+    function onScroll(){
+      var rect=chassis.getBoundingClientRect();
+      var max=chassis.offsetHeight-window.innerHeight;
+      target=max>0?clamp(-rect.top/max,0,1):0;
+    }
+    function onResize(){
+      var w=viewport.clientWidth,h=viewport.clientHeight;
+      if(!w||!h)return;
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,window.innerWidth<768?1.5:2));
+      renderer.setSize(w,h,false);
+      camera.aspect=w/h;
+      camera.fov=w<768?49:38;
+      camera.updateProjectionMatrix();
+    }
+    function setPhase(p) {
+      var phase=p<.18?0:(p<.78?1:2);
+      if(phase===lastPhase)return; lastPhase=phase;
+      if(phaseLabel) phaseLabel.textContent=phase===0?'THE LANDMARK BEGINS WITH THE LAND':(phase===1?'A NEW LANDMARK RISES, FLOOR BY FLOOR':'ARCHITECTURE, FINISHED WITH DETAIL');
+    }
+
+    function update(p) {
+      // 0–18%: reveal the plot and landscaping before construction starts.
+      var landProgress=smooth(p/.14);
+      site.scale.setScalar(.88+.12*landProgress);
+      site.position.y=-.12*(1-landProgress);
+      trees.children.forEach(function(t,j){t.scale.setScalar(landProgress*(.94+(j%3)*.04));});
+      neighbors.visible=p>.025;
+      // Tower phases: foundation/podium, structure, glass, final landscape lighting.
+      var podProgress=smooth((p-.08)/.12);
+      podium.visible=podProgress>.002;
+      podium.scale.y=.2+.8*podProgress;
+      podium.position.y=(1-podProgress)*-.4;
+      var built=0;
+      floors.forEach(function(fl,idx){
+        var start=.17+.60*(idx/floorCount);
+        var progress=smooth((p-start)/(.60/floorCount*1.7));
+        fl.group.visible=progress>.002;
+        fl.group.position.y=fl.baseY+(1-progress)*3.8;
+        fl.group.scale.set(1,.12+.88*progress,1);
+        fl.glass.material.emissiveIntensity=clamp((p-.72)/.25,0,1)*.34;
+        if(progress>.97)built=idx+1;
+      });
+      var crownProgress=smooth((p-.79)/.1);
+      crown.visible=crownProgress>.002;
+      crown.scale.setScalar(.2+.8*crownProgress);
+      crown.position.y=towerHeight+(1-crownProgress)*2.8;
+      beacon.visible=crownProgress>.85 && (reducedMotion || Math.floor(performance.now()/600)%2===0);
+      cranes.visible=p>.15&&p<.76;
+      crane1.position.y=0; crane2.position.y=0;
+      // Shift day to golden hour; keep a warm sky rather than turning the whole scene black.
+      var sunset=smooth((p-.48)/.42);
+      var night=smooth((p-.82)/.18);
+      sunGroup.position.set(13-p*23,15-p*17,-26);
+      sunGroup.scale.setScalar(1-.18*sunset);
+      sunLight.position.set(-18+p*20,28-p*18,16);
+      sunLight.color.setRGB(1,1-.28*sunset, .82-.48*sunset);
+      sunLight.intensity=2.5-.95*sunset;
+      ambient.intensity=1.45-.52*night;
+      ambient.color.setRGB(0.82-.28*night,0.9-.28*night,1);
+      fillLight.intensity=.7-.3*night;
+      warmLight.intensity=.5+night*1.1;
+      scene.fog.color.setRGB(.68-.34*night,.78-.4*night,.81-.35*night);
+      renderer.setClearColor(new THREE.Color().setRGB(.57-.42*night,.72-.52*night,.81-.48*night),1);
+      clouds.forEach(function(c,j){c.position.x=(j===0?-13:(j===1?12:19))+(p*3);});
+      // Camera gently moves from the land survey to a confident tower hero angle.
+      var angle=-.18+p*.36;
+      var dist=(window.innerWidth<768?30:25)-p*2.1;
+      var targetY=p<.16?2.0:(2.0+(p-.16)*9.5);
+      camera.position.set(Math.sin(angle)*dist, (window.innerWidth<768?9:8)+p*3.0, Math.cos(angle)*dist);
+      camera.lookAt(0,targetY,0);
+      setPhase(p);
+      if(counter)counter.textContent=(built<10?'0':'')+built;
+      if(cue)cue.style.opacity=p<.025?'1':'0';
+      if(modal){
+        var active=p>=.91;
+        modal.classList.toggle('is-active',active);
+        modal.setAttribute('aria-hidden',active?'false':'true');
+      }
+    }
+    function loop(){
+      raf=requestAnimationFrame(loop);
+      if(!visible)return;
+      current += (target-current)*(reducedMotion?1:.095);
+      if(Math.abs(target-current)<.00025)current=target;
+      update(current);
+      renderer.render(scene,camera);
+    }
+    window.addEventListener('scroll',onScroll,{passive:true});
+    window.addEventListener('resize',onResize,{passive:true});
+    if('IntersectionObserver'in window){
+      new IntersectionObserver(function(entries){visible=entries[0].isIntersecting;},{rootMargin:'120px'}).observe(chassis);
+    }
+    onResize(); onScroll(); current=target; update(current); loop();
+  }
+  function start(){loadThree(init);}
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
+})();
+</script>
