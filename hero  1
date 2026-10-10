@@ -1,0 +1,708 @@
+<!-- ========================================================
+     ROYAL GARDEN CITY — 3D DAY-TO-NIGHT SUN HERO
+     Center Popup on Completion • Smooth 60 FPS Retina
+     ======================================================== -->
+
+<!-- Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+<div class="rgc-hero-container">
+  <div class="rgc-scroll-chassis" id="rgcScrollChassis">
+    <div class="rgc-sticky-viewport" id="rgcViewport">
+      
+      <!-- Ultra-HD WebGL Canvas -->
+      <canvas id="rgcWebGlCanvas"></canvas>
+
+      <!-- Deep Atmospheric Vignette Overlay -->
+      <div class="rgc-cinematic-vignette" id="rgcVignette"></div>
+
+      <!-- Discreet Bottom-Left Floor Counter -->
+      <div class="rgc-hud-status">
+        <span class="rgc-hud-indicator"></span>
+        <span class="rgc-hud-txt">LEVEL <b id="rgcFloorCounter">00</b> / 24</span>
+      </div>
+
+      <!-- Minimal Bottom Scroll Prompt (Fades out quickly) -->
+      <div class="rgc-mouse-cue" id="rgcMouseCue">
+        <span>SCROLL TO CONSTRUCT</span>
+        <div class="rgc-cue-bar"><div class="rgc-cue-drop"></div></div>
+      </div>
+
+      <!-- CENTER COMPLETION POPUP (Revealed upon finishing 24 floors) -->
+      <div class="rgc-center-modal" id="rgcCenterModal" aria-hidden="true">
+        <div class="rgc-modal-card">
+          <span class="rgc-modal-badge">A NEW LANDMARK RISES</span>
+          <h2 class="rgc-modal-title">ROYAL GARDEN CITY</h2>
+          <p class="rgc-modal-subtitle">Jasimuddin Road, Uttara &bull; Dhaka</p>
+          <div class="rgc-modal-divider"></div>
+          <p class="rgc-modal-description">
+            Architectural excellence, panoramic curtain-wall residences &amp; bespoke commercial suites engineered for the future.
+          </p>
+          <a href="https://royalgardencity.com/contact/" class="rgc-modal-btn">
+            <span>Get Consultation Now</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<style>
+/* 1. Header Desktop Fix: Forces Astra/WordPress header to transparent & overlays it over the 3D canvas */
+header, 
+.site-header, 
+#masthead, 
+.ast-main-header-wrap, 
+.main-header-bar,
+.ast-primary-header-bar,
+.elementor-location-header {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  background-color: transparent !important;
+  background: transparent !important;
+  border-bottom: none !important;
+  box-shadow: none !important;
+  z-index: 9999 !important;
+}
+
+/* 2. Break Out Edge-to-Edge (Zero White Gutters on Left & Right) */
+.rgc-hero-container {
+  position: relative !important;
+  width: 100vw !important;
+  left: 50% !important;
+  right: 50% !important;
+  margin-left: -50vw !important;
+  margin-right: -50vw !important;
+  padding: 0 !important;
+  overflow: clip !important;
+  background-color: #04070e !important;
+  box-sizing: border-box !important;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
+}
+
+/* 3. Fast 3-4 Swipe Construction Track */
+.rgc-scroll-chassis {
+  position: relative !important;
+  width: 100% !important;
+  height: 220vh !important;
+  background: #04070e !important;
+}
+
+/* 4. Sticky Viewport with Dynamic Day-to-Night CSS Sky Background */
+.rgc-sticky-viewport {
+  position: sticky !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100vh !important;
+  height: 100dvh !important;
+  overflow: hidden !important;
+  /* Day gradient default (dynamically shaded by JS) */
+  background: radial-gradient(ellipse at 50% 85%, #1e355b 0%, #0c182e 55%, #050a14 100%) !important;
+  transition: background 0.1s linear !important;
+}
+
+/* 5. Accelerated High-DPI Canvas */
+canvas#rgcWebGlCanvas {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  display: block !important;
+  z-index: 1 !important;
+  touch-action: pan-y !important;
+}
+
+/* 6. Cinematic Vignette */
+.rgc-cinematic-vignette {
+  position: absolute !important;
+  inset: 0 !important;
+  background: radial-gradient(circle at 50% 50%, transparent 45%, rgba(4, 7, 14, 0.72) 100%) !important;
+  pointer-events: none !important;
+  z-index: 2 !important;
+}
+
+/* 7. Discreet Level Pill - Bottom Left */
+.rgc-hud-status {
+  position: absolute !important;
+  left: 28px !important;
+  bottom: 28px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  background: rgba(14, 23, 42, 0.75) !important;
+  backdrop-filter: blur(14px) !important;
+  -webkit-backdrop-filter: blur(14px) !important;
+  border: 1px solid rgba(197, 168, 128, 0.35) !important;
+  padding: 8px 18px !important;
+  border-radius: 9999px !important;
+  z-index: 10 !important;
+  pointer-events: none !important;
+}
+
+.rgc-hud-indicator {
+  width: 6px !important;
+  height: 6px !important;
+  background-color: #C5A880 !important;
+  border-radius: 50% !important;
+  box-shadow: 0 0 8px #C5A880 !important;
+}
+
+.rgc-hud-txt {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+  font-size: 11px !important;
+  letter-spacing: 0.22em !important;
+  color: #94a3b8 !important;
+  font-weight: 600 !important;
+}
+
+.rgc-hud-txt b {
+  color: #ffffff !important;
+  font-size: 14px !important;
+  letter-spacing: 0.05em !important;
+}
+
+/* 8. Minimal Scroll Cue */
+.rgc-mouse-cue {
+  position: absolute !important;
+  left: 50% !important;
+  bottom: 24px !important;
+  transform: translateX(-50%) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  gap: 8px !important;
+  z-index: 10 !important;
+  pointer-events: none !important;
+  transition: opacity 0.35s ease !important;
+}
+
+.rgc-mouse-cue span {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+  font-size: 10px !important;
+  letter-spacing: 0.25em !important;
+  color: #64748b !important;
+  font-weight: 600 !important;
+}
+
+.rgc-cue-bar {
+  width: 1px !important;
+  height: 28px !important;
+  background: rgba(255, 255, 255, 0.14) !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+
+.rgc-cue-drop {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  background: linear-gradient(180deg, #C5A880, transparent) !important;
+  animation: rgcDrop 1.6s infinite ease-in-out !important;
+}
+
+@keyframes rgcDrop {
+  0%   { transform: translateY(-100%); }
+  100% { transform: translateY(100%); }
+}
+
+/* 9. CENTER POPUP MODAL (Appears on Scroll End) */
+.rgc-center-modal {
+  position: absolute !important;
+  inset: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  z-index: 20 !important;
+  padding: 24px !important;
+  pointer-events: none !important;
+  opacity: 0 !important;
+  transform: scale(0.92) translateY(24px) !important;
+  transition: opacity 0.55s cubic-bezier(0.16, 1, 0.3, 1), transform 0.55s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.rgc-center-modal.is-active {
+  opacity: 1 !important;
+  transform: scale(1) translateY(0) !important;
+  pointer-events: auto !important;
+}
+
+.rgc-modal-card {
+  position: relative !important;
+  max-width: 540px !important;
+  width: 100% !important;
+  text-align: center !important;
+  padding: 42px 36px !important;
+  box-sizing: border-box !important;
+  background: rgba(10, 16, 29, 0.82) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border: 1px solid rgba(197, 168, 128, 0.45) !important;
+  border-radius: 16px !important;
+  box-shadow: 0 24px 60px -10px rgba(0, 0, 0, 0.75), 0 0 30px rgba(197, 168, 128, 0.15) !important;
+}
+
+.rgc-modal-badge {
+  display: inline-block !important;
+  font-family: 'Cinzel', serif !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.32em !important;
+  color: #C5A880 !important;
+  text-transform: uppercase !important;
+  margin-bottom: 12px !important;
+}
+
+.rgc-modal-title {
+  font-family: 'Cinzel', serif !important;
+  font-size: clamp(26px, 3.2vw, 38px) !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.18em !important;
+  color: #ffffff !important;
+  margin: 0 0 8px 0 !important;
+  line-height: 1.15 !important;
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.6) !important;
+}
+
+.rgc-modal-subtitle {
+  font-family: 'Inter', sans-serif !important;
+  font-size: 13.5px !important;
+  letter-spacing: 0.2em !important;
+  color: #9cb0d0 !important;
+  text-transform: uppercase !important;
+  margin: 0 !important;
+}
+
+.rgc-modal-divider {
+  width: 60px !important;
+  height: 2px !important;
+  background: linear-gradient(90deg, transparent, #C5A880, transparent) !important;
+  margin: 22px auto !important;
+}
+
+.rgc-modal-description {
+  font-family: 'Inter', sans-serif !important;
+  font-size: 14.5px !important;
+  line-height: 1.65 !important;
+  color: #cbd5e1 !important;
+  margin: 0 0 28px 0 !important;
+  font-weight: 300 !important;
+}
+
+/* Get Consultation Now Button */
+.rgc-modal-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 12px !important;
+  background: linear-gradient(135deg, #F3DFBA 0%, #C5A880 50%, #9C7E54 100%) !important;
+  color: #070b14 !important;
+  padding: 16px 36px !important;
+  border-radius: 6px !important;
+  font-family: 'Cinzel', serif !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.18em !important;
+  text-transform: uppercase !important;
+  text-decoration: none !important;
+  box-shadow: 0 10px 28px rgba(197, 168, 128, 0.4), 0 2px 6px rgba(0, 0, 0, 0.3) !important;
+  transition: all 0.28s ease !important;
+}
+
+.rgc-modal-btn:hover {
+  transform: translateY(-2px) !important;
+  background: linear-gradient(135deg, #ffffff 0%, #d8be96 60%, #a88a5e 100%) !important;
+  box-shadow: 0 14px 34px rgba(197, 168, 128, 0.55) !important;
+}
+
+/* Responsive Mobile Screen Tuning */
+@media (max-width: 768px) {
+  .rgc-hud-status {
+    left: 18px !important;
+    bottom: 18px !important;
+    padding: 6px 14px !important;
+  }
+  .rgc-modal-card {
+    padding: 32px 22px !important;
+  }
+  .rgc-modal-title {
+    font-size: 24px !important;
+    letter-spacing: 0.12em !important;
+  }
+  .rgc-modal-subtitle {
+    font-size: 11.5px !important;
+  }
+  .rgc-modal-description {
+    font-size: 13.5px !important;
+    margin-bottom: 22px !important;
+  }
+  .rgc-modal-btn {
+    width: 100% !important;
+    box-sizing: border-box !important;
+    padding: 14px 20px !important;
+  }
+}
+</style>
+
+<!-- High-Resolution Three.js Script with Day/Night Physics & Modal Activation -->
+<script>
+(function() {
+  function init3DHero() {
+    var chassis = document.getElementById('rgcScrollChassis');
+    var canvas = document.getElementById('rgcWebGlCanvas');
+    var viewport = document.getElementById('rgcViewport');
+    var modalEl = document.getElementById('rgcCenterModal');
+    var counterEl = document.getElementById('rgcFloorCounter');
+    var cueEl = document.getElementById('rgcMouseCue');
+    if (!chassis || !canvas || !window.THREE) return;
+
+    var renderer;
+    try {
+      renderer = new THREE.WebGLRenderer({
+        canvas: canvas,
+        antialias: true, // Ultra-sharp edges
+        alpha: true,
+        powerPreference: 'high-performance'
+      });
+    } catch(e) {
+      console.warn('WebGL init error:', e);
+      return;
+    }
+
+    // Full Retina/4K sharpness: up to 2.0x DPR
+    var dpr = Math.min(window.devicePixelRatio || 1, 2.0);
+    renderer.setPixelRatio(dpr);
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.15;
+    if (renderer.outputEncoding !== undefined) {
+      renderer.outputEncoding = THREE.sRGBEncoding;
+    }
+
+    var scene = new THREE.Scene();
+    var camera = new THREE.PerspectiveCamera(40, 1, 0.1, 220);
+
+    var GOLD = 0xC5A880;
+    var NAVY_PODIUM = 0x0f172a;
+    var SLAB_COLOR = 0xd8e0eb;
+    var TOTAL_FLOORS = 24;
+    var FLOOR_HEIGHT = 1.05;
+    var BASE_ELEVATION = 0.55;
+
+    // Day to Night Light Sources
+    var ambLight = new THREE.AmbientLight(0xa5c4f2, 0.9); // Starts bright blue daytime
+    scene.add(ambLight);
+
+    var sunLight = new THREE.DirectionalLight(0xfff3df, 1.8); // Primary daytime sun
+    sunLight.position.set(18, 32, 16);
+    scene.add(sunLight);
+
+    var rimLight = new THREE.PointLight(GOLD, 1.2, 75); // Architectural accent
+    rimLight.position.set(-14, 14, -10);
+    scene.add(rimLight);
+
+    // Navana Perspective Ground Grid
+    var gridPlane = new THREE.GridHelper(50, 50, GOLD, 0x1e293b);
+    gridPlane.material.transparent = true;
+    gridPlane.material.opacity = 0.32;
+    gridPlane.position.y = 0.01;
+    scene.add(gridPlane);
+
+    // 512x512 High-Definition Facade Texture
+    var texCanvas = document.createElement('canvas');
+    texCanvas.width = 512;
+    texCanvas.height = 512;
+    var ctx = texCanvas.getContext('2d');
+    
+    // Tinted architectural curtain glass
+    ctx.fillStyle = '#0a101d';
+    ctx.fillRect(0, 0, 512, 512);
+
+    for (var col = 0; col < 4; col++) {
+      var isLit = col % 2 === 0;
+      ctx.fillStyle = isLit ? '#ffd98c' : '#1c2d47';
+      ctx.globalAlpha = isLit ? 0.95 : 0.7;
+      ctx.fillRect(col * 128 + 10, 24, 108, 464);
+    }
+    
+    // Crisp Gold Mullion Band
+    ctx.globalAlpha = 1.0;
+    ctx.fillStyle = '#C5A880';
+    ctx.fillRect(0, 0, 512, 12);
+    ctx.fillRect(0, 500, 512, 12);
+
+    var highResTexture = new THREE.CanvasTexture(texCanvas);
+    highResTexture.wrapS = highResTexture.wrapT = THREE.RepeatWrapping;
+    if (renderer.capabilities && renderer.capabilities.getMaxAnisotropy) {
+      highResTexture.anisotropy = Math.min(renderer.capabilities.getMaxAnisotropy(), 8);
+    }
+
+    var towerRoot = new THREE.Group();
+    scene.add(towerRoot);
+
+    // Foundation Podium
+    var fndGeo = new THREE.BoxGeometry(8.8, BASE_ELEVATION, 8.8);
+    var fndMat = new THREE.MeshStandardMaterial({ color: NAVY_PODIUM, roughness: 0.5, metalness: 0.3, transparent: true });
+    var fndMesh = new THREE.Mesh(fndGeo, fndMat);
+    fndMesh.position.y = BASE_ELEVATION / 2;
+    towerRoot.add(fndMesh);
+
+    var fndWire = new THREE.LineSegments(
+      new THREE.EdgesGeometry(fndGeo),
+      new THREE.LineBasicMaterial({ color: GOLD, transparent: true })
+    );
+    fndMesh.add(fndWire);
+
+    // Shared Performance Materials
+    var slabMaterial = new THREE.MeshStandardMaterial({ color: SLAB_COLOR, metalness: 0.25, roughness: 0.35, transparent: true });
+    var edgeMaterial = new THREE.LineBasicMaterial({ color: GOLD, transparent: true });
+    var columnMaterial = new THREE.MeshStandardMaterial({ color: GOLD, metalness: 0.9, roughness: 0.2, transparent: true });
+
+    var floors = [];
+    for (var i = 0; i < TOTAL_FLOORS; i++) {
+      var w = i < 4 ? 7.2 : (i < 18 ? 5.2 : (i < 22 ? 4.0 : 3.0));
+      var h = FLOOR_HEIGHT * 0.94;
+      var grp = new THREE.Group();
+      grp.position.y = BASE_ELEVATION + i * FLOOR_HEIGHT + FLOOR_HEIGHT / 2;
+
+      // Concrete Slab
+      var slab = new THREE.Mesh(new THREE.BoxGeometry(w + 0.35, 0.12, w + 0.35), slabMaterial);
+      slab.position.y = -FLOOR_HEIGHT / 2 + 0.06;
+      grp.add(slab);
+
+      // Glass Curtain Box
+      var glassMat = new THREE.MeshStandardMaterial({
+        map: highResTexture,
+        metalness: 0.85,
+        roughness: 0.18,
+        emissive: 0x1f1809,
+        emissiveIntensity: 0.0,
+        transparent: true
+      });
+      var glass = new THREE.Mesh(new THREE.BoxGeometry(w, h - 0.08, w), glassMat);
+      glass.position.y = 0.02;
+      grp.add(glass);
+
+      // Gold Wireframe Edges
+      var ed = new THREE.LineSegments(new THREE.EdgesGeometry(glass.geometry), edgeMaterial);
+      ed.position.copy(glass.position);
+      grp.add(ed);
+
+      // Gold Corner Columns
+      [ [1, 1], [1, -1], [-1, 1], [-1, -1] ].forEach(function(c) {
+        var col = new THREE.Mesh(new THREE.BoxGeometry(0.14, h, 0.14), columnMaterial);
+        col.position.set(c[0] * w / 2, 0.02, c[1] * w / 2);
+        grp.add(col);
+      });
+
+      towerRoot.add(grp);
+      floors.push({
+        group: grp,
+        baseY: grp.position.y,
+        glassMat: glassMat
+      });
+    }
+
+    // Crown, Spire & Rooftop Aviation Beacon
+    var crown = new THREE.Group();
+    var topElev = BASE_ELEVATION + TOTAL_FLOORS * FLOOR_HEIGHT;
+
+    var spire = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.04, 0.08, 3.6, 16),
+      columnMaterial
+    );
+    spire.position.y = 1.8;
+    crown.add(spire);
+
+    var cap = new THREE.Mesh(
+      new THREE.BoxGeometry(2.2, 0.35, 2.2),
+      fndMat
+    );
+    cap.position.y = 0.18;
+    crown.add(cap);
+
+    var beacon = new THREE.Mesh(
+      new THREE.SphereGeometry(0.12, 16, 16),
+      new THREE.MeshBasicMaterial({ color: 0xff453a })
+    );
+    beacon.position.y = 3.65;
+    crown.add(beacon);
+
+    crown.position.y = topElev;
+    towerRoot.add(crown);
+
+    function clamp(val, min, max) { return Math.min(max, Math.max(min, val)); }
+    function easeOut(t) { return 1 - Math.pow(1 - t, 3); }
+
+    var targetScroll = 0;
+    var curScroll = 0;
+    var isIntersecting = true;
+
+    function onScroll() {
+      var r = chassis.getBoundingClientRect();
+      var max = r.height - window.innerHeight;
+      if (max <= 0) return;
+      targetScroll = clamp(-r.top / max, 0, 1);
+    }
+
+    function onResize() {
+      var stage = chassis.querySelector('.rgc-sticky-viewport');
+      var w = stage.clientWidth;
+      var h = stage.clientHeight;
+      renderer.setSize(w, h, false);
+      camera.aspect = w / h;
+      camera.fov = w < 768 ? 54 : 38;
+      camera.updateProjectionMatrix();
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onResize);
+
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function(entries) {
+        isIntersecting = entries[0].isIntersecting;
+      }, { rootMargin: '100px' }).observe(chassis);
+    }
+
+    // Dynamic Color Interpolation for Day -> Sunset -> Night
+    var daySkyColor = new THREE.Color(0xa5c4f2);
+    var nightSkyColor = new THREE.Color(0x1a2638);
+    var daySunColor = new THREE.Color(0xfff5e6);
+    var sunsetSunColor = new THREE.Color(0xffaa5e);
+    var nightSunColor = new THREE.Color(0x384a68);
+
+    function updateScene(p) {
+      // 1. Foundation Podium
+      var fProgress = easeOut(clamp(p / 0.08, 0, 1));
+      fndMat.opacity = fProgress;
+      fndWire.material.opacity = fProgress;
+      fndMesh.scale.y = 0.2 + 0.8 * fProgress;
+      fndMesh.position.y = (BASE_ELEVATION * fndMesh.scale.y) / 2;
+
+      // 2. Floors Construction
+      var builtFloors = 0;
+      for (var idx = 0; idx < TOTAL_FLOORS; idx++) {
+        var fl = floors[idx];
+        var startOffset = 0.06 + 0.76 * (idx / TOTAL_FLOORS);
+        var floorAnim = easeOut(clamp((p - startOffset) / (0.76 / TOTAL_FLOORS * 2.2), 0, 1));
+
+        fl.group.visible = floorAnim > 0.001;
+        fl.group.position.y = fl.baseY + (1 - floorAnim) * 5.5;
+        fl.group.scale.set(1, 0.25 + 0.75 * floorAnim, 1);
+
+        fl.glassMat.opacity = floorAnim;
+
+        // Interior window lighting powers up as night falls (p > 0.70)
+        var nightWindowGlow = clamp((p - 0.70) / 0.25, 0, 1);
+        fl.glassMat.emissiveIntensity = nightWindowGlow * 1.35;
+
+        if (floorAnim > 0.98) builtFloors = idx + 1;
+      }
+
+      // 3. Spire & Crown
+      var crownAnim = easeOut(clamp((p - 0.84) / 0.08, 0, 1));
+      crown.visible = crownAnim > 0.001;
+      crown.scale.setScalar(0.2 + 0.8 * crownAnim);
+      crown.position.y = topElev + (1 - crownAnim) * 3.5;
+      beacon.visible = crownAnim > 0.88 && (Math.floor(performance.now() / 600) % 2 === 0);
+
+      // 4. DAY AND NIGHT SUN CYCLE (p = 0 Day -> p = 0.5 Sunset -> p = 1.0 Night)
+      // Sun position rotates and sets into the horizon
+      var sunAngle = p * Math.PI * 0.85;
+      var sunX = Math.cos(sunAngle) * 28;
+      var sunY = Math.sin(Math.PI * (1 - p * 0.82)) * 34 - (p * 8);
+      var sunZ = Math.sin(sunAngle) * 20;
+      sunLight.position.set(sunX, Math.max(sunY, 2), sunZ);
+
+      if (p < 0.5) {
+        // Daytime into Golden Sunset
+        var tDay = p / 0.5;
+        ambLight.color.copy(daySkyColor).lerp(sunsetSunColor, tDay * 0.4);
+        ambLight.intensity = 0.9 - tDay * 0.25;
+        sunLight.color.copy(daySunColor).lerp(sunsetSunColor, tDay);
+        sunLight.intensity = 1.8 - tDay * 0.4;
+      } else {
+        // Sunset into Deep Night
+        var tNight = (p - 0.5) / 0.5;
+        ambLight.color.copy(sunsetSunColor).lerp(nightSkyColor, tNight);
+        ambLight.intensity = 0.65 - tNight * 0.35;
+        sunLight.color.copy(sunsetSunColor).lerp(nightSunColor, tNight);
+        sunLight.intensity = 1.4 - tNight * 0.95;
+      }
+
+      // Dynamic CSS Sky Backdrop Gradient Transition
+      if (viewport) {
+        var dayR1 = Math.round(30 - p * 22);
+        var dayG1 = Math.round(53 - p * 38);
+        var dayB1 = Math.round(91 - p * 60);
+        viewport.style.background = 'radial-gradient(ellipse at 50% 85%, rgb(' + dayR1 + ',' + dayG1 + ',' + dayB1 + ') 0%, #070d18 55%, #04070e 100%)';
+      }
+
+      // 5. Orbiting Camera Sweep
+      var camAngle = -0.75 + p * Math.PI * 1.35;
+      var camDist = (camera.aspect < 1 ? 32 : 23) - p * 3.5;
+      var camHgt = 3.8 + p * 11;
+      var lookAtY = (BASE_ELEVATION + Math.max(builtFloors, 2) * FLOOR_HEIGHT) * 0.5;
+
+      camera.position.set(Math.sin(camAngle) * camDist, camHgt, Math.cos(camAngle) * camDist);
+      camera.lookAt(0, lookAtY + p * 3.2, 0);
+
+      rimLight.position.set(-Math.sin(camAngle) * 14, 9, -Math.cos(camAngle) * 14);
+
+      // 6. UI Synchronization & Center Modal Trigger
+      if (counterEl) {
+        counterEl.textContent = (builtFloors < 10 ? '0' : '') + builtFloors;
+      }
+      if (cueEl) {
+        cueEl.style.opacity = p < 0.04 ? '1' : '0';
+      }
+
+      // Center Popup activates right as the 24th floor finishes (at p >= 0.88)
+      if (modalEl) {
+        if (p >= 0.88) {
+          modalEl.classList.add('is-active');
+          modalEl.setAttribute('aria-hidden', 'false');
+        } else {
+          modalEl.classList.remove('is-active');
+          modalEl.setAttribute('aria-hidden', 'true');
+        }
+      }
+    }
+
+    function renderLoop() {
+      requestAnimationFrame(renderLoop);
+      if (!isIntersecting) return;
+      curScroll += (targetScroll - curScroll) * 0.14;
+      if (Math.abs(targetScroll - curScroll) < 0.0003) {
+        curScroll = targetScroll;
+      }
+      updateScene(curScroll);
+      renderer.render(scene, camera);
+    }
+
+    onResize();
+    onScroll();
+    curScroll = targetScroll;
+    renderLoop();
+  }
+
+  // Safe Three.js Loader Script
+  if (window.THREE) {
+    init3DHero();
+  } else {
+    var script = document.createElement('script');
+    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js';
+    script.onload = init3DHero;
+    document.head.appendChild(script);
+  }
+})();
+</script>
