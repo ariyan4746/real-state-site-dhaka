@@ -1,0 +1,930 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Royal Garden City</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Hanken+Grotesk:wght@400;500;600;700&family=Marcellus&family=Noto+Serif+Bengali:wght@500;600&display=swap" rel="stylesheet">
+<style>
+/* Layout concept: a survey-sheet master plan. A dark WebGL plot-plan hero, then light drawing-sheet sections with small plot-mark crosses, mono annotations and tilting 3D cards. */
+:root {
+  --bg: #F1F4EF;
+  --surface: #FFFFFF;
+  --surface-2: #E6ECE4;
+  --ink: #10261E;
+  --muted: #51635B;
+  --line: #D1D9CF;
+  --brand: #0F3B2E;
+  --accent: #8A6710;
+  --accent-soft: #EFE3C2;
+  --btn-bg: #0F3B2E;
+  --btn-fg: #F6F3E8;
+  --bld: #1B5744;
+  --win: #EBDDAE;
+  --shadow: 0 22px 44px -26px rgba(15, 59, 46, .55);
+  --hero-bg: #07140F;
+  --hero-glow: #123C30;
+  --hero-fg: #EAF0EA;
+  --hero-muted: #9FB5AA;
+  --hero-accent: #D8B25C;
+  --hero-accent-fg: #07140F;
+  --hero-line: #23473C;
+  --font-display: "Marcellus", "Trajan Pro", Georgia, serif;
+  --font-body: "Hanken Grotesk", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "DM Mono", ui-monospace, Menlo, Consolas, monospace;
+  --font-bn: "Noto Serif Bengali", "Kalpurush", "Nirmala UI", serif;
+  --gutter: clamp(16px, 4vw, 48px);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0A1814; --surface: #10241E; --surface-2: #163029; --ink: #E9EFEA; --muted: #9BAFA5; --line: #24403A;
+    --brand: #2C7A62; --accent: #D8B25C; --accent-soft: #2B2A17; --btn-bg: #D8B25C; --btn-fg: #0A1814;
+    --bld: #2F7C63; --win: #F0DFA6; --shadow: 0 22px 44px -26px rgba(0, 0, 0, .9);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0A1814; --surface: #10241E; --surface-2: #163029; --ink: #E9EFEA; --muted: #9BAFA5; --line: #24403A;
+  --brand: #2C7A62; --accent: #D8B25C; --accent-soft: #2B2A17; --btn-bg: #D8B25C; --btn-fg: #0A1814;
+  --bld: #2F7C63; --win: #F0DFA6; --shadow: 0 22px 44px -26px rgba(0, 0, 0, .9);
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: 16px; line-height: 1.65;
+  -webkit-font-smoothing: antialiased; overflow-x: hidden;
+}
+img, svg { max-width: 100%; }
+a { color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.wrap { max-width: 1200px; margin-inline: auto; padding-inline: var(--gutter); }
+section[id] { scroll-margin-top: 76px; }
+h1, h2, h3 { font-family: var(--font-display); font-weight: 400; text-wrap: balance; margin: 0; line-height: 1.1; }
+h2 { font-size: clamp(30px, 4.2vw, 50px); }
+h3 { font-size: 24px; }
+p { margin: 0; }
+.mono { font-family: var(--font-mono); }
+.eyebrow {
+  font-family: var(--font-mono); font-size: 12px; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--accent); display: inline-flex; align-items: center; gap: 10px;
+}
+.eyebrow::before {
+  content: ""; width: 12px; height: 12px; flex: none;
+  background:
+    linear-gradient(currentColor, currentColor) center / 100% 1.5px no-repeat,
+    linear-gradient(currentColor, currentColor) center / 1.5px 100% no-repeat;
+}
+.sec { padding-block: clamp(64px, 9vw, 116px); }
+.sec-head { display: grid; gap: 16px; max-width: 760px; margin-bottom: clamp(32px, 5vw, 56px); }
+.sec-head p { color: var(--muted); font-size: 18px; max-width: 62ch; }
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  padding: 14px 24px; border-radius: 4px; font: 600 15px/1 var(--font-body);
+  border: 1px solid transparent; cursor: pointer; text-decoration: none;
+  transition: transform .2s, background .2s, border-color .2s;
+}
+.btn:hover { transform: translateY(-2px); }
+.btn-primary { background: var(--btn-bg); color: var(--btn-fg); }
+.btn-outline { border-color: var(--line); color: var(--ink); background: transparent; }
+.btn-outline:hover { border-color: var(--accent); }
+.btn-gold { background: var(--hero-accent); color: var(--hero-accent-fg); }
+.btn-ghost { border-color: var(--hero-line); color: var(--hero-fg); background: transparent; }
+.btn-ghost:hover { border-color: var(--hero-accent); }
+
+/* Header */
+.site-header {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 50;
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--line);
+}
+.bar { display: flex; align-items: center; gap: 20px; min-height: 68px; }
+.brand { display: flex; align-items: center; gap: 12px; text-decoration: none; margin-right: auto; min-width: 0; }
+.brand svg { width: 34px; height: 34px; color: var(--accent); flex: none; }
+.brand b { font: 400 21px/1 var(--font-display); letter-spacing: .02em; white-space: nowrap; }
+.brand small { display: block; font: 500 10px/1.4 var(--font-mono); letter-spacing: .16em; text-transform: uppercase; color: var(--muted); }
+.nav { display: flex; align-items: center; gap: 28px; }
+.nav a { text-decoration: none; font-size: 14px; font-weight: 500; color: var(--muted); }
+.nav a:hover { color: var(--ink); }
+.icon-btn {
+  width: 42px; height: 42px; display: grid; place-items: center; border-radius: 4px;
+  border: 1px solid var(--line); background: transparent; color: var(--ink); cursor: pointer;
+}
+.icon-btn svg { width: 18px; height: 18px; }
+.nav-toggle { display: none; }
+@media (max-width: 920px) {
+  .nav-toggle { display: grid; }
+  .bar .btn { display: none; }
+  .nav {
+    display: none; position: absolute; left: 0; right: 0; top: 100%;
+    flex-direction: column; align-items: stretch; gap: 0;
+    background: var(--bg); border-bottom: 1px solid var(--line); padding: 8px var(--gutter) 16px;
+  }
+  .nav.open { display: flex; }
+  .nav a { padding: 14px 0; border-bottom: 1px solid var(--line); font-size: 16px; }
+}
+
+/* Hero */
+.hero {
+  background: radial-gradient(900px 520px at 78% 42%, var(--hero-glow), transparent 62%), var(--hero-bg);
+  color: var(--hero-fg); border-bottom: 1px solid var(--hero-line); position: relative; overflow: hidden;
+}
+.hero-grid {
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.08fr);
+  align-items: center; gap: clamp(8px, 3vw, 40px); padding-block: clamp(40px, 6vw, 72px);
+}
+.hero-copy { display: grid; gap: 22px; justify-items: start; min-width: 0; }
+.bn { font: 600 clamp(18px, 2.2vw, 24px)/1.4 var(--font-bn); color: var(--hero-accent); }
+.hero .eyebrow { color: var(--hero-muted); }
+.hero h1 { font-size: clamp(36px, 5.3vw, 66px); line-height: 1.04; }
+.lead { color: var(--hero-muted); font-size: clamp(16px, 1.5vw, 19px); max-width: 52ch; }
+.cta-row { display: flex; flex-wrap: wrap; gap: 12px; }
+.hero-facts { display: flex; flex-wrap: wrap; gap: 14px 32px; margin: 8px 0 0; padding-top: 22px; border-top: 1px solid var(--hero-line); width: 100%; }
+.hero-facts div { min-width: 0; }
+.hero-facts dt { font: 500 11px/1.4 var(--font-mono); letter-spacing: .14em; text-transform: uppercase; color: var(--hero-muted); }
+.hero-facts dd { margin: 2px 0 0; font: 400 22px/1.2 var(--font-display); color: var(--hero-fg); }
+.hero-scene { position: relative; height: clamp(340px, 46vw, 580px); min-width: 0; touch-action: pan-y; }
+#scene { position: absolute; inset: 0; }
+#scene canvas { display: block; width: 100%; height: 100%; }
+#scene.nogl {
+  background:
+    linear-gradient(var(--hero-line), var(--hero-line)) center bottom / 70% 1px no-repeat,
+    radial-gradient(closest-side, var(--hero-glow), transparent);
+}
+.plan-note { position: absolute; font: 400 11px/1.5 var(--font-mono); letter-spacing: .08em; color: var(--hero-muted); pointer-events: none; }
+.plan-note.tl { left: 0; bottom: 4px; }
+.compass { position: absolute; right: 0; top: 6px; width: 54px; height: 54px; color: var(--hero-muted); pointer-events: none; }
+.scalebar { position: absolute; right: 0; bottom: 4px; display: grid; gap: 4px; justify-items: end; }
+.scalebar i { display: block; width: 90px; height: 6px; border: 1px solid var(--hero-muted); border-top: 0; }
+@media (max-width: 920px) {
+  .hero-grid { grid-template-columns: minmax(0, 1fr); }
+  .hero-scene { height: 380px; }
+}
+
+/* Practices */
+.cards3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px; }
+@media (max-width: 960px) { .cards3 { grid-template-columns: minmax(0, 1fr); } }
+.tilt {
+  transform: perspective(1000px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+  transform-style: preserve-3d; transition: transform .18s ease-out, box-shadow .3s; will-change: transform;
+}
+.tilt::after {
+  content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: 0; transition: opacity .25s;
+  background: radial-gradient(360px circle at var(--gx, 50%) var(--gy, 0%), rgba(255, 255, 255, .16), transparent 60%);
+}
+@media (hover: hover) { .tilt:hover { box-shadow: var(--shadow); } .tilt:hover::after { opacity: 1; } }
+.tilt:not(:hover) { transition: transform .5s ease-out, box-shadow .3s; }
+.practice {
+  position: relative; background: var(--surface); border: 1px solid var(--line); border-radius: 6px;
+  padding: 30px 28px 32px; display: grid; gap: 14px; align-content: start; min-width: 0;
+}
+.practice .ico { width: 78px; height: 78px; color: var(--accent); transform: translateZ(46px); }
+.practice h3 { transform: translateZ(28px); }
+.practice .tagline { color: var(--muted); }
+.ticks { list-style: none; margin: 6px 0 0; padding: 0; display: grid; gap: 10px; }
+.ticks li { position: relative; padding-left: 24px; font-size: 15px; }
+.ticks li::before {
+  content: ""; position: absolute; left: 0; top: .5em; width: 11px; height: 11px; color: var(--accent);
+  background:
+    linear-gradient(currentColor, currentColor) center / 100% 1.5px no-repeat,
+    linear-gradient(currentColor, currentColor) center / 1.5px 100% no-repeat;
+}
+
+/* About */
+.about { background: var(--surface-2); border-block: 1px solid var(--line); }
+.about-grid { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, .8fr); gap: clamp(28px, 5vw, 72px); align-items: start; }
+@media (max-width: 900px) { .about-grid { grid-template-columns: minmax(0, 1fr); } }
+.about-copy { display: grid; gap: 18px; color: var(--muted); font-size: 18px; }
+.about-copy h2 { color: var(--ink); margin-bottom: 6px; }
+.datasheet { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 8px 24px; margin: 0; }
+.datasheet div { display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 16px; padding: 16px 0; border-bottom: 1px dashed var(--line); }
+.datasheet div:last-child { border: 0; }
+.datasheet dt { font: 500 11px/1.8 var(--font-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--accent); }
+.datasheet dd { margin: 0; font-size: 15px; }
+
+/* Developments */
+.dev-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
+@media (max-width: 820px) { .dev-grid { grid-template-columns: minmax(0, 1fr); } }
+.dev { position: relative; background: var(--surface); border: 1px solid var(--line); border-radius: 6px; overflow: hidden; min-width: 0; display: grid; }
+.elev { background: linear-gradient(var(--surface-2), var(--surface)); border-bottom: 1px solid var(--line); transform: translateZ(20px); }
+.elev svg { display: block; width: 100%; height: auto; }
+.e-bld { fill: var(--bld); }
+.e-lit { fill: var(--win); }
+.e-off { fill: color-mix(in srgb, var(--bld) 72%, #000); }
+.e-gold { fill: var(--accent); }
+.e-tree { fill: color-mix(in srgb, var(--bld) 55%, var(--surface-2)); }
+.e-ground { stroke: var(--ink); stroke-width: 1; opacity: .5; }
+.dev-body { padding: 22px 24px 26px; display: grid; gap: 10px; }
+.dev-meta { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.chip { font: 500 11px/1 var(--font-mono); letter-spacing: .1em; text-transform: uppercase; padding: 6px 9px; border: 1px solid var(--line); border-radius: 3px; color: var(--muted); }
+.chip.gold { color: var(--accent); border-color: var(--accent); }
+.dev-body p { color: var(--muted); font-size: 15px; }
+.dev-body a { font-weight: 600; font-size: 14px; color: var(--accent); text-decoration: none; justify-self: start; border-bottom: 1px solid currentColor; padding-bottom: 2px; }
+
+/* Interior studio */
+.studio { background: var(--surface-2); border-block: 1px solid var(--line); }
+.studio-grid { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); gap: clamp(28px, 5vw, 64px); align-items: center; }
+@media (max-width: 900px) { .studio-grid { grid-template-columns: minmax(0, 1fr); } }
+.stage {
+  position: relative; height: clamp(380px, 52vw, 520px); display: grid; place-items: center;
+  perspective: 1500px; background: var(--surface); border: 1px solid var(--line); border-radius: 6px; overflow: hidden; touch-action: pan-y;
+}
+.stage-hint { position: absolute; left: 16px; bottom: 12px; font: 400 11px/1.4 var(--font-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.room {
+  width: 360px; height: 360px; position: relative; margin-top: 70px; transform-style: preserve-3d;
+  transform: scale(var(--s, 1)) rotateX(var(--rx, 58deg)) rotateZ(var(--rz, 45deg));
+  background: repeating-linear-gradient(90deg, var(--floor), var(--floor) 44px, color-mix(in srgb, var(--floor) 88%, #000) 44px, color-mix(in srgb, var(--floor) 88%, #000) 46px);
+  transition: background .4s;
+}
+.room[data-finish="walnut"] { --floor: #7B5236; --sofa: #2F5D4B; --wall: #EAE5D7; --wall2: #DDD7C7; --rug: #C9B27A; --wood: #5B3B27; --leaf: #3C8660; --lamp: #F4D58A; }
+.room[data-finish="oak"] { --floor: #CDAB7E; --sofa: #5F7A8C; --wall: #F2F0E9; --wall2: #E4E1D7; --rug: #8FA195; --wood: #A9854F; --leaf: #4C9468; --lamp: #F4D58A; }
+.room[data-finish="ash"] { --floor: #C9CDC6; --sofa: #34476A; --wall: #E1E5E0; --wall2: #D2D7D1; --rug: #BDAA7C; --wood: #8B8E86; --leaf: #3A8A62; --lamp: #F4D58A; }
+.wall { position: absolute; left: 0; top: 0; transform-origin: 0 0; transition: background .4s; }
+.wall-b { width: 360px; height: 160px; transform: rotateX(90deg); background: linear-gradient(var(--wall), var(--wall2)); }
+.wall-l { width: 160px; height: 360px; transform: rotateY(-90deg); background: linear-gradient(90deg, var(--wall), var(--wall2)); }
+.win { position: absolute; left: 70px; top: 34px; width: 120px; height: 84px; background: linear-gradient(#BFE0EE, #EAF6FA); border: 5px solid var(--wood); }
+.win::after { content: ""; position: absolute; inset: 0; background: linear-gradient(var(--wood), var(--wood)) center / 100% 4px no-repeat, linear-gradient(var(--wood), var(--wood)) center / 4px 100% no-repeat; }
+.pic { position: absolute; left: 44px; top: 130px; width: 90px; height: 64px; border: 5px solid var(--wood); background: linear-gradient(135deg, #D8B25C, #2F7C63); }
+.box { position: absolute; left: 0; top: 0; transform-style: preserve-3d; }
+.box .f { position: absolute; left: 0; top: 0; display: block; transform-origin: 0 0; transition: background .4s; }
+.box .top { background: var(--c); }
+.box .fr { background: color-mix(in srgb, var(--c) 76%, #000); }
+.box .bk { background: color-mix(in srgb, var(--c) 68%, #000); }
+.box .lf { background: color-mix(in srgb, var(--c) 64%, #000); }
+.box .rt { background: color-mix(in srgb, var(--c) 82%, #000); }
+.swatches { display: flex; flex-wrap: wrap; gap: 10px; margin: 6px 0 4px; }
+.swatch {
+  display: inline-flex; align-items: center; gap: 10px; padding: 10px 16px 10px 10px; border-radius: 4px;
+  border: 1px solid var(--line); background: var(--surface); color: var(--ink); font: 500 14px/1 var(--font-body); cursor: pointer;
+}
+.swatch i { width: 22px; height: 22px; border-radius: 3px; border: 1px solid rgba(0, 0, 0, .25); display: block; }
+.swatch[aria-pressed="true"] { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+.studio-copy { display: grid; gap: 18px; min-width: 0; }
+.studio-copy p { color: var(--muted); font-size: 18px; }
+
+/* Process */
+.steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0; counter-reset: s; }
+.steps li { position: relative; padding: 28px 22px 0 0; border-top: 1px solid var(--line); display: grid; gap: 10px; align-content: start; }
+.steps li::before {
+  content: ""; position: absolute; left: 0; top: -6px; width: 11px; height: 11px; border-radius: 50%; background: var(--accent);
+}
+.steps .n { font: 500 12px/1 var(--font-mono); letter-spacing: .14em; text-transform: uppercase; color: var(--accent); }
+.steps h3 { font-size: 21px; }
+.steps p { color: var(--muted); font-size: 15px; }
+@media (max-width: 960px) {
+  .steps { grid-template-columns: minmax(0, 1fr); }
+  .steps li { border-top: 0; border-left: 1px solid var(--line); padding: 0 0 32px 28px; }
+  .steps li::before { left: -6px; top: 4px; }
+}
+
+/* Why + areas */
+.why { background: var(--surface-2); border-block: 1px solid var(--line); }
+.why-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 22px; }
+@media (max-width: 1000px) { .why-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 560px) { .why-grid { grid-template-columns: minmax(0, 1fr); } }
+.why-card { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 26px 24px; display: grid; gap: 10px; align-content: start; min-width: 0; }
+.why-card h3 { font-size: 21px; }
+.why-card p { color: var(--muted); font-size: 15px; }
+.areas { margin-top: clamp(36px, 5vw, 56px); display: grid; gap: 16px; }
+.chips { display: flex; flex-wrap: wrap; gap: 10px; }
+.chips span { padding: 10px 16px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); font-size: 14px; }
+
+/* Contact */
+.contact-grid { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: clamp(28px, 5vw, 64px); align-items: start; }
+@media (max-width: 900px) { .contact-grid { grid-template-columns: minmax(0, 1fr); } }
+.contact-info { display: grid; gap: 22px; min-width: 0; }
+.contact-info .sec-head { margin-bottom: 0; }
+.info-row { display: grid; gap: 4px; padding-top: 16px; border-top: 1px solid var(--line); }
+.info-row .k { font: 500 11px/1.4 var(--font-mono); letter-spacing: .14em; text-transform: uppercase; color: var(--accent); }
+.info-row .v { font-size: 17px; overflow-wrap: anywhere; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.copy-btn { font: 600 12px/1 var(--font-body); padding: 6px 10px; border: 1px solid var(--line); border-radius: 3px; background: transparent; color: var(--muted); cursor: pointer; }
+.copy-btn:hover { color: var(--ink); border-color: var(--accent); }
+.form { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: clamp(22px, 3vw, 36px); display: grid; gap: 18px; min-width: 0; }
+.form h3 { font-size: 26px; }
+.row2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+@media (max-width: 560px) { .row2 { grid-template-columns: minmax(0, 1fr); } }
+.field { display: grid; gap: 6px; min-width: 0; }
+.field label { font: 500 12px/1.2 var(--font-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.field input, .field select, .field textarea {
+  width: 100%; font: 400 16px/1.4 var(--font-body); color: var(--ink); background: var(--bg);
+  border: 1px solid var(--line); border-radius: 4px; padding: 13px 14px;
+}
+.field textarea { min-height: 120px; resize: vertical; }
+.form-msg { color: #B3402F; font-size: 14px; min-height: 1.2em; }
+:root[data-theme="dark"] .form-msg { color: #F0907E; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .form-msg { color: #F0907E; } }
+.result { display: grid; gap: 12px; padding: 18px; border: 1px dashed var(--accent); border-radius: 6px; background: var(--accent-soft); }
+.result p { font-size: 14px; color: var(--muted); }
+.result pre { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; font: 400 13px/1.6 var(--font-mono); color: var(--ink); }
+.result .acts { display: flex; flex-wrap: wrap; gap: 10px; }
+
+/* Footer */
+.footer { background: var(--hero-bg); color: var(--hero-fg); border-top: 1px solid var(--hero-line); }
+.foot-grid { display: grid; grid-template-columns: minmax(0, 1.4fr) repeat(2, minmax(0, .8fr)); gap: 32px; padding-block: 56px 32px; }
+@media (max-width: 760px) { .foot-grid { grid-template-columns: minmax(0, 1fr); } }
+.footer .brand svg { color: var(--hero-accent); }
+.footer .brand small { color: var(--hero-muted); }
+.footer p, .footer li, .footer a { color: var(--hero-muted); font-size: 14px; }
+.footer h4 { margin: 0 0 12px; font: 500 11px/1.4 var(--font-mono); letter-spacing: .14em; text-transform: uppercase; color: var(--hero-accent); }
+.footer ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.footer a { text-decoration: none; }
+.footer a:hover { color: var(--hero-fg); }
+.copyright { border-top: 1px solid var(--hero-line); padding-block: 20px; font: 400 12px/1.6 var(--font-mono); color: var(--hero-muted); display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: space-between; }
+
+/* Reveal: content stays visible, only a small lift animates */
+.rv { transform: translateY(22px); transition: transform .7s cubic-bezier(.2, .7, .2, 1); }
+.rv.in { transform: none; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .rv { transform: none; transition: none; }
+  .tilt, .btn { transition: none; }
+}
+</style>
+
+<header class="site-header">
+  <div class="wrap bar">
+    <a class="brand" href="#top" aria-label="Royal Garden City, home">
+      <svg viewBox="0 0 34 34" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true">
+        <path d="M5 27V12l6.5 6L17 7l5.5 11L29 12v15z"/><path d="M5 30h24"/><circle cx="17" cy="23" r="2.2"/>
+      </svg>
+      <span><b>Royal Garden City</b><small>Dhaka, Bangladesh</small></span>
+    </a>
+    <nav class="nav" id="nav" aria-label="Main">
+      <a href="#practices">Practices</a>
+      <a href="#about">About</a>
+      <a href="#developments">Developments</a>
+      <a href="#interiors">Interiors</a>
+      <a href="#process">Process</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <button class="icon-btn" id="themeBtn" type="button" aria-label="Switch colour theme">
+      <svg id="icoSun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      <svg id="icoMoon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" hidden><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4 8.5 8.5 0 1 0 20 14.5z"/></svg>
+    </button>
+    <a class="btn btn-primary" href="#contact">Book a consultation</a>
+    <button class="icon-btn nav-toggle" id="navBtn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+    </button>
+  </div>
+</header>
+
+<main>
+<section class="hero" id="top">
+  <div class="wrap hero-grid">
+    <div class="hero-copy">
+      <p class="bn">আপনার স্বপ্নের ঠিকানা</p>
+      <p class="eyebrow">Real estate · Development · Interior design</p>
+      <h1>From the first plot to the last light fitting.</h1>
+      <p class="lead">Royal Garden City is a Dhaka real estate, development and interior design company. We sell and lease property, plan and build residential and commercial buildings, and finish the interiors. One team answers for the whole job.</p>
+      <div class="cta-row">
+        <a class="btn btn-gold" href="#contact">Book a consultation</a>
+        <a class="btn btn-ghost" href="#developments">View developments</a>
+      </div>
+      <dl class="hero-facts">
+        <div><dt>Practices</dt><dd>Three, one team</dd></div>
+        <div><dt>Home market</dt><dd>Dhaka</dd></div>
+        <div><dt>Measured in</dt><dd>Katha and sft</dd></div>
+      </dl>
+    </div>
+    <div class="hero-scene" id="heroScene">
+      <div id="scene" role="img" aria-label="Interactive 3D model of a Royal Garden City masterplan with towers around a landscaped plaza"></div>
+      <svg class="compass" viewBox="0 0 54 54" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><circle cx="27" cy="31" r="18"/><path d="M27 13l5 18-5-3-5 3z" fill="currentColor"/><text x="27" y="9" text-anchor="middle" font-size="10" fill="currentColor" stroke="none" font-family="DM Mono, monospace">N</text></svg>
+      <div class="plan-note tl">23.8103° N · 90.4125° E<br>Dhaka masterplan, model view</div>
+      <div class="plan-note scalebar"><i></i><span>Drag to turn the model</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="practices">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <span class="eyebrow">Our practices</span>
+      <h2>Three disciplines under one roof.</h2>
+      <p>Most projects fail at the handover between companies. We keep sales, development and interiors together so that the plan, the budget and the finish stay connected.</p>
+    </div>
+    <div class="cards3">
+      <article class="practice tilt rv" data-tilt>
+        <svg class="ico" viewBox="0 0 80 80" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="M10 38L40 12l30 26"/><path d="M17 33v35h46V33"/><path d="M34 68V48h12v20"/><circle cx="52" cy="26" r="3"/></svg>
+        <h3>Real Estate</h3>
+        <p class="tagline">Buy, sell and lease with the paperwork checked first.</p>
+        <ul class="ticks">
+          <li>Residential apartments and plots</li>
+          <li>Commercial floors and shop space</li>
+          <li>Leasing and tenant placement</li>
+          <li>Title, mutation and tax record review</li>
+        </ul>
+      </article>
+      <article class="practice tilt rv" data-tilt>
+        <svg class="ico" viewBox="0 0 80 80" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="M14 70V30h26v40"/><path d="M40 70V18h20v52"/><path d="M8 70h64"/><path d="M20 38h14M20 48h14M20 58h14M46 28h8M46 38h8M46 48h8M46 58h8"/></svg>
+        <h3>Development</h3>
+        <p class="tagline">Planned, approved and built to an agreed schedule.</p>
+        <ul class="ticks">
+          <li>Land assessment and masterplanning</li>
+          <li>Plans prepared for RAJUK approval</li>
+          <li>Residential and commercial construction</li>
+          <li>Site supervision and quality control</li>
+        </ul>
+      </article>
+      <article class="practice tilt rv" data-tilt>
+        <svg class="ico" viewBox="0 0 80 80" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="M14 44V34a8 8 0 0 1 8-8h36a8 8 0 0 1 8 8v10"/><path d="M8 44h64v14H8z"/><path d="M14 58v8M66 58v8"/><path d="M26 44v-6h28v6"/><path d="M40 8v8M34 12h12"/></svg>
+        <h3>Interior Design</h3>
+        <p class="tagline">Spaces finished so that they work from the first day.</p>
+        <ul class="ticks">
+          <li>Concept, mood boards and 3D visuals</li>
+          <li>Space planning and custom joinery</li>
+          <li>Lighting, materials and furniture</li>
+          <li>Turnkey fit-out and handover</li>
+        </ul>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="sec about" id="about">
+  <div class="wrap about-grid">
+    <div class="about-copy rv">
+      <span class="eyebrow">About the company</span>
+      <h2>A property company that stays for the whole project.</h2>
+      <p>Royal Garden City works across the life of a property in Dhaka. We help clients find and buy land or a home. We develop and build. Our interior studio then finishes the space. Keeping these disciplines together means one budget, one schedule and one team that answers for the result.</p>
+      <p>Dhaka rewards people who understand its plots, its approval routes and its building seasons. We plan around them from the first meeting, and we tell clients early when something will cost more or take longer.</p>
+      <div class="cta-row"><a class="btn btn-primary" href="#contact">Talk to our team</a></div>
+    </div>
+    <dl class="datasheet rv">
+      <div><dt>Company</dt><dd>Royal Garden City</dd></div>
+      <div><dt>Based in</dt><dd>Dhaka, Bangladesh</dd></div>
+      <div><dt>Practices</dt><dd>Real estate, development, interior design</dd></div>
+      <div><dt>Projects</dt><dd>Residential, commercial and mixed-use</dd></div>
+      <div><dt>Units</dt><dd>Plots in katha, floor areas in sft</dd></div>
+      <div><dt>Office days</dt><dd>Saturday to Thursday</dd></div>
+    </dl>
+  </div>
+</section>
+
+<section class="sec" id="developments">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <span class="eyebrow">Featured developments</span>
+      <h2>Buildings drawn for the way Dhaka lives.</h2>
+      <p>A selection of our residential, commercial and mixed-use schemes. Ask our team for floor plans, specifications and availability.</p>
+    </div>
+    <div class="dev-grid" id="devGrid"></div>
+  </div>
+</section>
+
+<section class="sec studio" id="interiors">
+  <div class="wrap studio-grid">
+    <div class="stage rv" id="stage">
+      <div class="room" id="room" data-finish="walnut" aria-label="Interactive 3D model of a living room"></div>
+      <span class="stage-hint">Move over the room to turn it</span>
+    </div>
+    <div class="studio-copy rv">
+      <span class="eyebrow">Interior studio</span>
+      <h2>The finish is part of the building.</h2>
+      <p>Our interior designers join the project at the planning stage, so sockets, lighting, joinery and furniture are placed with the structure and not squeezed in afterwards. We work on apartments, offices, showrooms and restaurants.</p>
+      <div>
+        <div class="eyebrow" style="margin-bottom:10px">Try a finish</div>
+        <div class="swatches" role="group" aria-label="Room finish">
+          <button class="swatch" type="button" data-finish="walnut" aria-pressed="true"><i style="background:#7B5236"></i>Walnut</button>
+          <button class="swatch" type="button" data-finish="oak" aria-pressed="false"><i style="background:#CDAB7E"></i>Oak</button>
+          <button class="swatch" type="button" data-finish="ash" aria-pressed="false"><i style="background:#C9CDC6"></i>Ash</button>
+        </div>
+      </div>
+      <ul class="ticks">
+        <li>Concept design and 3D visuals before anything is built</li>
+        <li>Space planning, custom joinery and furniture</li>
+        <li>Lighting design and material selection</li>
+        <li>Turnkey fit-out managed by one site team</li>
+      </ul>
+      <div class="cta-row"><a class="btn btn-primary" href="#contact" data-interest="Interior design">Plan your interior</a></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="process">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <span class="eyebrow">How we work</span>
+      <h2>Five steps from first call to handover.</h2>
+    </div>
+    <ol class="steps rv">
+      <li><span class="n">Step 1</span><h3>Consultation</h3><p>We listen to your brief, budget and timeline, and say plainly what is realistic.</p></li>
+      <li><span class="n">Step 2</span><h3>Site and feasibility</h3><p>We check the land, its records and the planning rules before design begins.</p></li>
+      <li><span class="n">Step 3</span><h3>Design and approvals</h3><p>Architecture, layouts and interiors are drawn together, then submitted for approval.</p></li>
+      <li><span class="n">Step 4</span><h3>Construction and fit-out</h3><p>Our site team builds and finishes to the agreed scope, with regular progress reports.</p></li>
+      <li><span class="n">Step 5</span><h3>Handover and care</h3><p>We inspect with you, hand over documents and keys, and stay available afterwards.</p></li>
+    </ol>
+  </div>
+</section>
+
+<section class="sec why" id="why">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <span class="eyebrow">Why Royal Garden City</span>
+      <h2>Commitments we put in writing.</h2>
+    </div>
+    <div class="why-grid">
+      <article class="why-card tilt rv" data-tilt><h3>One accountable team</h3><p>Sales, development and interiors sit together, so no one can point to another contractor when something slips.</p></article>
+      <article class="why-card tilt rv" data-tilt><h3>Paperwork before price</h3><p>Title, mutation and tax records are reviewed before a sale is discussed.</p></article>
+      <article class="why-card tilt rv" data-tilt><h3>A written scope</h3><p>Every project starts with a written scope, budget and schedule that you can hold us to.</p></article>
+      <article class="why-card tilt rv" data-tilt><h3>Local judgement</h3><p>We know Dhaka's neighbourhoods, approval routes and building seasons, and plan around them.</p></article>
+    </div>
+    <div class="areas rv">
+      <span class="eyebrow">Where we work</span>
+      <div class="chips">
+        <span>Gulshan</span><span>Banani</span><span>Baridhara</span><span>Dhanmondi</span><span>Uttara</span><span>Bashundhara R/A</span><span>Mohakhali</span><span>Mirpur</span><span>Purbachal</span><span>Motijheel</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="contact">
+  <div class="wrap contact-grid">
+    <div class="contact-info rv">
+      <div class="sec-head">
+        <span class="eyebrow">Contact</span>
+        <h2>Start with a conversation.</h2>
+        <p>Tell us what you want to buy, build or furnish. A member of our team will reply within one working day.</p>
+      </div>
+      <div class="info-row"><span class="k">Office</span><span class="v">Dhaka, Bangladesh</span></div>
+      <div class="info-row"><span class="k">Phone</span><span class="v"><span id="phoneTxt">+880 1XXX-XXXXXX</span><button class="copy-btn" type="button" data-copy="#phoneTxt">Copy</button></span></div>
+      <div class="info-row"><span class="k">Email</span><span class="v"><span id="mailTxt">info@royalgardencity.com</span><button class="copy-btn" type="button" data-copy="#mailTxt">Copy</button></span></div>
+      <div class="info-row"><span class="k">Office hours</span><span class="v">Saturday to Thursday, 10:00 to 18:00 (Dhaka time). Closed on Friday.</span></div>
+    </div>
+    <form class="form rv" id="enquiry" novalidate>
+      <h3>Send an enquiry</h3>
+      <div class="row2">
+        <div class="field"><label for="f-name">Full name</label><input id="f-name" name="name" type="text" autocomplete="name" placeholder="Your name"></div>
+        <div class="field"><label for="f-phone">Phone</label><input id="f-phone" name="phone" type="tel" autocomplete="tel" placeholder="+880"></div>
+      </div>
+      <div class="field"><label for="f-email">Email (optional)</label><input id="f-email" name="email" type="email" autocomplete="email" placeholder="you@example.com"></div>
+      <div class="field">
+        <label for="f-interest">I am interested in</label>
+        <select id="f-interest" name="interest">
+          <option>Buying or leasing a property</option>
+          <option>A plot or land</option>
+          <option>Development or joint venture</option>
+          <option>Interior design</option>
+          <option>Something else</option>
+        </select>
+      </div>
+      <div class="field"><label for="f-msg">Message</label><textarea id="f-msg" name="msg" placeholder="Area, size, budget and timeline help us reply properly."></textarea></div>
+      <div class="form-msg" id="formMsg" role="alert"></div>
+      <button class="btn btn-primary" type="submit">Prepare my enquiry</button>
+      <div class="result" id="result" hidden>
+        <p>Your enquiry is ready. Copy it and send it to <b>info@royalgardencity.com</b>, or read it out when you call us.</p>
+        <pre id="resultTxt"></pre>
+        <div class="acts"><button class="btn btn-outline" type="button" id="copyResult">Copy enquiry</button></div>
+      </div>
+    </form>
+  </div>
+</section>
+</main>
+
+<footer class="footer">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <a class="brand" href="#top" aria-label="Royal Garden City, back to top">
+          <svg viewBox="0 0 34 34" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="M5 27V12l6.5 6L17 7l5.5 11L29 12v15z"/><path d="M5 30h24"/><circle cx="17" cy="23" r="2.2"/></svg>
+          <span><b>Royal Garden City</b><small>Real estate · Development · Interiors</small></span>
+        </a>
+        <p style="margin-top:16px;max-width:42ch">Residential and commercial property, development and interior design in Dhaka, Bangladesh.</p>
+      </div>
+      <div><h4>Company</h4><ul><li><a href="#about">About</a></li><li><a href="#practices">Practices</a></li><li><a href="#developments">Developments</a></li><li><a href="#process">Process</a></li></ul></div>
+      <div><h4>Get in touch</h4><ul><li>Dhaka, Bangladesh</li><li>info@royalgardencity.com</li><li>Saturday to Thursday, 10:00 to 18:00</li><li><a href="#contact">Send an enquiry</a></li></ul></div>
+    </div>
+    <div class="copyright"><span>© 2026 Royal Garden City. All rights reserved.</span><span>23.8103° N, 90.4125° E</span></div>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function () {
+  var RM = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var $ = function (s, r) { return (r || document).querySelector(s); };
+  var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
+
+  /* Theme */
+  var root = document.documentElement;
+  function effective() {
+    var t = root.getAttribute('data-theme');
+    if (t) return t;
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  }
+  function paintIcons() {
+    var d = effective() === 'dark';
+    $('#icoSun').hidden = d; $('#icoMoon').hidden = !d;
+  }
+  try { var saved = localStorage.getItem('rgc-theme'); if (saved) root.setAttribute('data-theme', saved); } catch (e) {}
+  paintIcons();
+  $('#themeBtn').addEventListener('click', function () {
+    var next = effective() === 'dark' ? 'light' : 'dark';
+    root.setAttribute('data-theme', next);
+    try { localStorage.setItem('rgc-theme', next); } catch (e) {}
+    paintIcons();
+  });
+
+  /* Mobile nav */
+  var navBtn = $('#navBtn'), nav = $('#nav');
+  navBtn.addEventListener('click', function () {
+    var open = nav.classList.toggle('open');
+    navBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+  $$('#nav a').forEach(function (a) { a.addEventListener('click', function () { nav.classList.remove('open'); navBtn.setAttribute('aria-expanded', 'false'); }); });
+
+  /* Reveal */
+  if ('IntersectionObserver' in window && !RM) {
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+    }, { rootMargin: '0px 0px -8% 0px' });
+    $$('.rv').forEach(function (el) { io.observe(el); });
+  } else { $$('.rv').forEach(function (el) { el.classList.add('in'); }); }
+
+  /* Developments */
+  var devs = [
+    { name: 'Royal Garden Residences', type: 'Residential', place: 'Bashundhara R/A, Dhaka', text: 'A mid-rise apartment community around a landscaped courtyard, with a rooftop garden and covered parking.', interest: 'Buying or leasing a property',
+      blocks: [{ x: 48, w: 96, f: 12, c: 5, roof: 'step' }, { x: 160, w: 70, f: 9, c: 4, roof: 'flat' }, { x: 244, w: 40, f: 6, c: 2, roof: 'flat' }] },
+    { name: 'Royal Garden Heights', type: 'Residential', place: 'Gulshan, Dhaka', text: 'A slim high-rise of larger apartments with open views, planned around natural light and cross ventilation.', interest: 'Buying or leasing a property',
+      blocks: [{ x: 112, w: 78, f: 18, c: 4, roof: 'crown' }, { x: 206, w: 52, f: 7, c: 3, roof: 'flat' }, { x: 56, w: 44, f: 5, c: 2, roof: 'flat' }] },
+    { name: 'Royal Garden Business Square', type: 'Commercial', place: 'Banani, Dhaka', text: 'Open-plan office floors and ground-level shops, with a generous entrance plaza and structured parking.', interest: 'Development or joint venture',
+      blocks: [{ x: 40, w: 160, f: 8, c: 9, roof: 'flat' }, { x: 212, w: 66, f: 12, c: 3, roof: 'crown' }] },
+    { name: 'Royal Garden Courtyard Villas', type: 'Villas', place: 'Purbachal, Dhaka', text: 'Low-rise family homes arranged around shared green space, each with a private garden and flexible interior layouts.', interest: 'A plot or land',
+      blocks: [{ x: 36, w: 74, f: 3, c: 3, roof: 'gable' }, { x: 124, w: 74, f: 3, c: 3, roof: 'gable' }, { x: 212, w: 74, f: 3, c: 3, roof: 'gable' }] }
+  ];
+  function elev(blocks) {
+    var g = 176, s = '<svg viewBox="0 0 320 200" role="img" aria-hidden="true">';
+    blocks.forEach(function (b, bi) {
+      var fh = Math.min(12, 148 / b.f), h = b.f * fh, y = g - h, cw = (b.w - 12) / b.c;
+      if (b.roof === 'gable') { s += '<polygon class="e-gold" points="' + (b.x - 6) + ',' + y + ' ' + (b.x + b.w / 2) + ',' + (y - 22) + ' ' + (b.x + b.w + 6) + ',' + y + '"/>'; }
+      s += '<rect class="e-bld" x="' + b.x + '" y="' + y + '" width="' + b.w + '" height="' + h + '"/>';
+      if (b.roof === 'step') { s += '<rect class="e-bld" x="' + (b.x + 18) + '" y="' + (y - 16) + '" width="' + (b.w - 36) + '" height="16"/><rect class="e-gold" x="' + (b.x + 14) + '" y="' + (y - 19) + '" width="' + (b.w - 28) + '" height="3"/>'; }
+      if (b.roof === 'crown') { s += '<rect class="e-gold" x="' + (b.x - 3) + '" y="' + (y - 4) + '" width="' + (b.w + 6) + '" height="4"/><rect class="e-gold" x="' + (b.x + b.w / 2 - 1) + '" y="' + (y - 24) + '" width="2" height="20"/>'; }
+      if (b.roof === 'flat') { s += '<rect class="e-gold" x="' + (b.x - 2) + '" y="' + (y - 3) + '" width="' + (b.w + 4) + '" height="3"/>'; }
+      for (var r = 0; r < b.f; r++) for (var c = 0; c < b.c; c++) {
+        var lit = ((r * 7 + c * 13 + bi * 5) % 5) < 2;
+        s += '<rect class="' + (lit ? 'e-lit' : 'e-off') + '" x="' + (b.x + 6 + c * cw + 2).toFixed(1) + '" y="' + (y + r * fh + 2.5).toFixed(1) + '" width="' + (cw - 4).toFixed(1) + '" height="' + (fh - 5).toFixed(1) + '"/>';
+      }
+    });
+    [18, 296, 150, 100].forEach(function (x, i) { s += '<circle class="e-tree" cx="' + x + '" cy="' + (g - 7) + '" r="' + (9 + (i % 2) * 3) + '"/>'; });
+    s += '<line class="e-ground" x1="8" y1="' + g + '" x2="312" y2="' + g + '"/></svg>';
+    return s;
+  }
+  var grid = $('#devGrid');
+  devs.forEach(function (d) {
+    var el = document.createElement('article');
+    el.className = 'dev tilt rv'; el.setAttribute('data-tilt', '');
+    el.innerHTML = '<div class="elev">' + elev(d.blocks) + '</div><div class="dev-body"><div class="dev-meta"><span class="chip gold">' + d.type + '</span><span class="chip">' + d.place + '</span></div><h3>' + d.name + '</h3><p>' + d.text + '</p><a href="#contact" data-interest="' + d.interest + '">Enquire about this project</a></div>';
+    grid.appendChild(el);
+    if ('IntersectionObserver' in window && !RM) io.observe(el); else el.classList.add('in');
+  });
+
+  /* Interest prefill */
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest && e.target.closest('[data-interest]');
+    if (!a) return;
+    var sel = $('#f-interest'); var v = a.getAttribute('data-interest');
+    for (var i = 0; i < sel.options.length; i++) if (sel.options[i].text === v) sel.selectedIndex = i;
+  });
+
+  /* Tilt cards */
+  if (window.matchMedia('(hover: hover)').matches && !RM) {
+    $$('[data-tilt]').forEach(bindTilt);
+  }
+  function bindTilt(el) {
+    el.addEventListener('pointermove', function (e) {
+      var r = el.getBoundingClientRect(), px = (e.clientX - r.left) / r.width - .5, py = (e.clientY - r.top) / r.height - .5;
+      el.style.setProperty('--ry', (px * 9).toFixed(2) + 'deg');
+      el.style.setProperty('--rx', (-py * 9).toFixed(2) + 'deg');
+      el.style.setProperty('--gx', ((px + .5) * 100).toFixed(0) + '%');
+      el.style.setProperty('--gy', ((py + .5) * 100).toFixed(0) + '%');
+    });
+    el.addEventListener('pointerleave', function () { el.style.setProperty('--rx', '0deg'); el.style.setProperty('--ry', '0deg'); });
+  }
+
+  /* Interior 3D room */
+  var room = $('#room'), stage = $('#stage');
+  function mkBox(o) {
+    var b = document.createElement('div');
+    b.className = 'box';
+    b.style.cssText = '--c:' + o.c + ';width:' + o.w + 'px;height:' + o.d + 'px;transform:translate3d(' + o.x + 'px,' + o.y + 'px,' + (o.z || 0) + 'px)';
+    b.innerHTML =
+      '<i class="f top" style="width:' + o.w + 'px;height:' + o.d + 'px;transform:translateZ(' + o.h + 'px)"></i>' +
+      '<i class="f fr" style="width:' + o.w + 'px;height:' + o.h + 'px;top:' + o.d + 'px;transform:rotateX(90deg)"></i>' +
+      '<i class="f bk" style="width:' + o.w + 'px;height:' + o.h + 'px;top:0;transform:rotateX(90deg)"></i>' +
+      '<i class="f lf" style="width:' + o.h + 'px;height:' + o.d + 'px;left:0;transform:rotateY(-90deg)"></i>' +
+      '<i class="f rt" style="width:' + o.h + 'px;height:' + o.d + 'px;left:' + o.w + 'px;transform:rotateY(-90deg)"></i>';
+    room.appendChild(b);
+  }
+  var wb = document.createElement('div'); wb.className = 'wall wall-b'; wb.innerHTML = '<div class="win"></div>'; room.appendChild(wb);
+  var wl = document.createElement('div'); wl.className = 'wall wall-l'; wl.innerHTML = '<div class="pic"></div>'; room.appendChild(wl);
+  [
+    { x: 80, y: 120, w: 210, d: 140, h: 2, c: 'var(--rug)' },
+    { x: 92, y: 24, w: 170, d: 70, h: 26, c: 'var(--sofa)' },
+    { x: 92, y: 24, w: 170, d: 16, h: 58, c: 'var(--sofa)' },
+    { x: 92, y: 24, w: 16, d: 70, h: 44, c: 'var(--sofa)' },
+    { x: 246, y: 24, w: 16, d: 70, h: 44, c: 'var(--sofa)' },
+    { x: 134, y: 150, w: 92, d: 54, h: 18, c: 'var(--wood)' },
+    { x: 296, y: 120, w: 52, d: 52, h: 28, c: 'var(--sofa)' },
+    { x: 296, y: 120, w: 12, d: 52, h: 52, c: 'var(--sofa)' },
+    { x: 0, y: 200, w: 22, d: 96, h: 112, c: 'var(--wood)' },
+    { x: 308, y: 300, w: 30, d: 30, h: 22, c: '#B5654A' },
+    { x: 300, y: 292, w: 46, d: 46, h: 44, z: 22, c: 'var(--leaf)' },
+    { x: 312, y: 28, w: 8, d: 8, h: 96, c: 'var(--wood)' },
+    { x: 302, y: 18, w: 28, d: 28, h: 26, z: 96, c: 'var(--lamp)' }
+  ].forEach(mkBox);
+
+  var rx = 58, rz = 45, trx = 58, trz = 45, roomRAF = 0;
+  function sizeRoom() { var w = stage.clientWidth; room.style.setProperty('--s', Math.min(1, w / 540).toFixed(3)); }
+  function applyRoom() { room.style.setProperty('--rx', rx.toFixed(2) + 'deg'); room.style.setProperty('--rz', rz.toFixed(2) + 'deg'); }
+  function tickRoom() {
+    rx += (trx - rx) * .12; rz += (trz - rz) * .12; applyRoom();
+    if (Math.abs(trx - rx) > .05 || Math.abs(trz - rz) > .05) roomRAF = requestAnimationFrame(tickRoom); else roomRAF = 0;
+  }
+  stage.addEventListener('pointermove', function (e) {
+    if (RM) return;
+    var r = stage.getBoundingClientRect(), px = (e.clientX - r.left) / r.width - .5, py = (e.clientY - r.top) / r.height - .5;
+    trz = 45 + px * 34; trx = 58 + py * 12;
+    if (!roomRAF) roomRAF = requestAnimationFrame(tickRoom);
+  });
+  stage.addEventListener('pointerleave', function () { trz = 45; trx = 58; if (!roomRAF) roomRAF = requestAnimationFrame(tickRoom); });
+  sizeRoom(); applyRoom();
+  window.addEventListener('resize', sizeRoom);
+  $$('.swatch').forEach(function (b) {
+    b.addEventListener('click', function () {
+      room.setAttribute('data-finish', b.getAttribute('data-finish'));
+      $$('.swatch').forEach(function (o) { o.setAttribute('aria-pressed', o === b ? 'true' : 'false'); });
+    });
+  });
+
+  /* Copy helpers */
+  function flash(btn, txt) { var o = btn.textContent; btn.textContent = txt; setTimeout(function () { btn.textContent = o; }, 1400); }
+  function selectText(node) { try { var r = document.createRange(); r.selectNodeContents(node); var s = window.getSelection(); s.removeAllRanges(); s.addRange(r); } catch (e) {} }
+  function copyFrom(text, node, btn) {
+    var ok = function () { flash(btn, 'Copied'); };
+    var fail = function () { selectText(node); flash(btn, 'Press Ctrl+C'); };
+    try { navigator.clipboard.writeText(text).then(ok, fail); } catch (e) { fail(); }
+  }
+  $$('[data-copy]').forEach(function (b) {
+    b.addEventListener('click', function () { var n = $(b.getAttribute('data-copy')); copyFrom(n.textContent, n, b); });
+  });
+
+  /* Enquiry form */
+  var form = $('#enquiry'), msg = $('#formMsg'), result = $('#result'), out = $('#resultTxt');
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var name = $('#f-name').value.trim(), phone = $('#f-phone').value.trim(), email = $('#f-email').value.trim(), note = $('#f-msg').value.trim(), interest = $('#f-interest').value;
+    if (!name) { msg.textContent = 'Please enter your name.'; $('#f-name').focus(); return; }
+    if (!phone && !email) { msg.textContent = 'Please add a phone number or an email address so we can reply.'; $('#f-phone').focus(); return; }
+    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { msg.textContent = 'That email address looks incomplete. Please check it.'; $('#f-email').focus(); return; }
+    msg.textContent = '';
+    var t = 'Enquiry for Royal Garden City\nName: ' + name + '\n' + (phone ? 'Phone: ' + phone + '\n' : '') + (email ? 'Email: ' + email + '\n' : '') + 'Interested in: ' + interest + (note ? '\nMessage: ' + note : '');
+    out.textContent = t; result.hidden = false;
+  });
+  $('#copyResult').addEventListener('click', function () { copyFrom(out.textContent, out, this); });
+
+  /* Hero 3D scene */
+  (function () {
+    var wrap = $('#scene'); if (!wrap) return;
+    var T = window.THREE;
+    if (!T) { wrap.classList.add('nogl'); return; }
+    var renderer;
+    try { renderer = new T.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' }); } catch (e) { wrap.classList.add('nogl'); return; }
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    wrap.appendChild(renderer.domElement);
+
+    var scene = new T.Scene();
+    scene.fog = new T.FogExp2(0x07140f, 0.017);
+    var camera = new T.PerspectiveCamera(36, 1, 0.1, 220);
+
+    function rng(seed) { return function () { seed |= 0; seed = seed + 0x6D2B79F5 | 0; var t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+    var rnd = rng(20260);
+
+    scene.add(new T.HemisphereLight(0xcfe6ff, 0x0b1a16, 0.75));
+    var sun = new T.DirectionalLight(0xffe0ae, 1.15); sun.position.set(-14, 22, 12); scene.add(sun);
+    var glow = new T.PointLight(0xd8b25c, 1.3, 40); glow.position.set(0, 18, 0); scene.add(glow);
+
+    /* Ground, lawn, roads, plaza water */
+    function disc(r, color, y, seg) { var m = new T.Mesh(new T.CircleGeometry(r, seg || 72), new T.MeshStandardMaterial({ color: color, roughness: 1 })); m.rotation.x = -Math.PI / 2; m.position.y = y; scene.add(m); return m; }
+    disc(46, 0x0b201a, 0);
+    var gridH = new T.GridHelper(80, 40, 0x1f4a3d, 0x123228); gridH.position.y = 0.02; gridH.material.transparent = true; gridH.material.opacity = 0.45; scene.add(gridH);
+    disc(7.4, 0x1c5e45, 0.04);
+    function ring(r1, r2, color, y) { var m = new T.Mesh(new T.RingGeometry(r1, r2, 96), new T.MeshStandardMaterial({ color: color, roughness: 1, side: T.DoubleSide })); m.rotation.x = -Math.PI / 2; m.position.y = y; scene.add(m); }
+    ring(7.4, 8.1, 0x2b3a35, 0.05); ring(13.6, 14.4, 0x2b3a35, 0.05); ring(19.6, 20.2, 0x24332e, 0.05);
+    var water = new T.Mesh(new T.TorusGeometry(5.4, 0.34, 12, 90), new T.MeshStandardMaterial({ color: 0x3b92ad, emissive: 0x0f3a49, roughness: 0.2, metalness: 0.2 }));
+    water.rotation.x = Math.PI / 2; water.position.y = 0.3; scene.add(water);
+
+    /* Towers */
+    var facades = ['#c7d3ca', '#b3c4b9', '#d5d1c0', '#bccbc4'];
+    function facade(cols, rows) {
+      var cw = 14, ch = 18, c = document.createElement('canvas'), e = document.createElement('canvas');
+      c.width = e.width = cols * cw; c.height = e.height = rows * ch;
+      var g = c.getContext('2d'), ge = e.getContext('2d');
+      g.fillStyle = facades[Math.floor(rnd() * facades.length)]; g.fillRect(0, 0, c.width, c.height);
+      ge.fillStyle = '#000'; ge.fillRect(0, 0, e.width, e.height);
+      for (var r = 0; r < rows; r++) for (var k = 0; k < cols; k++) {
+        var lit = rnd() > 0.52, x = k * cw + 3, y = r * ch + 4;
+        g.fillStyle = lit ? '#ffe3a9' : '#2a4a40'; g.fillRect(x, y, cw - 6, ch - 8);
+        if (lit) { ge.fillStyle = '#ffc870'; ge.fillRect(x, y, cw - 6, ch - 8); }
+      }
+      var tm = new T.CanvasTexture(c), te = new T.CanvasTexture(e);
+      tm.anisotropy = 4;
+      return new T.MeshStandardMaterial({ map: tm, emissiveMap: te, emissive: new T.Color(0xffffff), emissiveIntensity: 0.95, roughness: 0.75, metalness: 0.05 });
+    }
+    var roofMat = new T.MeshStandardMaterial({ color: 0x2b4a40, roughness: 0.9 });
+    var gold = new T.MeshStandardMaterial({ color: 0xd8b25c, metalness: 0.85, roughness: 0.3, emissive: 0x3a2a08 });
+    var placed = [];
+    function tower(x, z, w, d, h) {
+      var side = facade(Math.max(3, Math.round(w * 2)), Math.max(4, Math.round(h * 1.5)));
+      var m = new T.Mesh(new T.BoxGeometry(w, h, d), [side, side, roofMat, roofMat, side, side]);
+      m.position.set(x, h / 2, z); scene.add(m);
+      if (h > 7) {
+        var h2 = h * 0.22, side2 = facade(Math.max(3, Math.round(w * 1.4)), 4);
+        var m2 = new T.Mesh(new T.BoxGeometry(w * 0.7, h2, d * 0.7), [side2, side2, roofMat, roofMat, side2, side2]);
+        m2.position.set(x, h + h2 / 2, z); scene.add(m2);
+      }
+      var cap = new T.Mesh(new T.BoxGeometry(w * 1.04, 0.14, d * 1.04), gold); cap.position.set(x, h + 0.07, z); scene.add(cap);
+      placed.push({ x: x, z: z, r: Math.max(w, d) * 0.9 });
+    }
+    // Royal tower at the centre
+    (function () {
+      var w = 3.8, h = 19;
+      tower(0, 0, w, w, h);
+      var up = new T.Mesh(new T.BoxGeometry(w * 0.7, 3.6, w * 0.7), gold); up.position.set(0, h + 0.14 + h * 0.22 + 1.8, 0); scene.add(up);
+      var crown = new T.Mesh(new T.ConeGeometry(w * 0.62, 3.6, 4), gold); crown.rotation.y = Math.PI / 4; crown.position.set(0, h + h * 0.22 + 5.6, 0); scene.add(crown);
+      var spire = new T.Mesh(new T.CylinderGeometry(0.03, 0.09, 3, 8), gold); spire.position.set(0, h + h * 0.22 + 8.6, 0); scene.add(spire);
+    })();
+    var i, a;
+    for (i = 0; i < 7; i++) { a = i / 7 * Math.PI * 2 + 0.2; tower(Math.cos(a) * 11, Math.sin(a) * 11, 2.2 + rnd() * 0.9, 2.2 + rnd() * 0.9, 8 + rnd() * 5.5); }
+    for (i = 0; i < 12; i++) { a = i / 12 * Math.PI * 2 + 0.1; tower(Math.cos(a) * 17, Math.sin(a) * 17, 2 + rnd() * 0.8, 2 + rnd() * 0.8, 4 + rnd() * 4); }
+
+    /* Trees */
+    var trunkG = new T.CylinderGeometry(0.08, 0.12, 0.7, 6), leafG = new T.IcosahedronGeometry(0.7, 0);
+    var trunkM = new T.MeshStandardMaterial({ color: 0x4a3524, roughness: 1 });
+    var leafMs = [0x2f7d5b, 0x3e9a6c, 0x256a4b].map(function (c) { return new T.MeshStandardMaterial({ color: c, roughness: 0.9, flatShading: true }); });
+    var made = 0, tries = 0;
+    while (made < 130 && tries < 900) {
+      tries++;
+      var ang = rnd() * Math.PI * 2, rad = 6.2 + rnd() * 22, tx = Math.cos(ang) * rad, tz = Math.sin(ang) * rad, ok = true;
+      for (var k = 0; k < placed.length; k++) { var dx = tx - placed[k].x, dz = tz - placed[k].z; if (dx * dx + dz * dz < Math.pow(placed[k].r + 1.1, 2)) { ok = false; break; } }
+      if (rad > 13.1 && rad < 14.9) ok = false;
+      if (rad > 7.2 && rad < 8.3) ok = false;
+      if (rad > 4.4 && rad < 6.4) ok = false;
+      if (!ok) continue;
+      var s = 0.8 + rnd() * 0.9, tr = new T.Mesh(trunkG, trunkM); tr.position.set(tx, 0.35 * s, tz); tr.scale.setScalar(s); scene.add(tr);
+      var lf = new T.Mesh(leafG, leafMs[Math.floor(rnd() * 3)]); lf.position.set(tx, 1.05 * s, tz); lf.scale.set(s, s * 1.15, s); scene.add(lf);
+      made++;
+    }
+
+    /* Fireflies */
+    var pg = new T.BufferGeometry(), pc = 150, pp = new Float32Array(pc * 3);
+    for (i = 0; i < pc; i++) { var pa = rnd() * Math.PI * 2, pr = 4 + rnd() * 22; pp[i * 3] = Math.cos(pa) * pr; pp[i * 3 + 1] = 0.8 + rnd() * 14; pp[i * 3 + 2] = Math.sin(pa) * pr; }
+    pg.setAttribute('position', new T.BufferAttribute(pp, 3));
+    var pts = new T.Points(pg, new T.PointsMaterial({ color: 0xf0cf7a, size: 0.16, transparent: true, opacity: 0.85, depthWrite: false }));
+    scene.add(pts);
+
+    /* Camera + interaction */
+    var mx = 0, my = 0, sx = 0, sy = 0, drag = 0, dragAng = 0, lastX = 0, running = false, visible = true, t0 = performance.now(), raf = 0;
+    var host = $('#heroScene');
+    host.addEventListener('pointermove', function (e) {
+      var r = host.getBoundingClientRect(); mx = (e.clientX - r.left) / r.width - 0.5; my = (e.clientY - r.top) / r.height - 0.5;
+      if (drag) { dragAng += (e.clientX - lastX) * 0.006; lastX = e.clientX; }
+      if (RM) draw(performance.now());
+    });
+    host.addEventListener('pointerdown', function (e) { drag = 1; lastX = e.clientX; });
+    window.addEventListener('pointerup', function () { drag = 0; });
+    host.addEventListener('pointerleave', function () { mx = 0; my = 0; });
+
+    function resize() {
+      var w = wrap.clientWidth || 600, h = wrap.clientHeight || 400;
+      renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix();
+      draw(performance.now());
+    }
+    function draw(now) {
+      var t = (now - t0) / 1000;
+      sx += (mx - sx) * 0.05; sy += (my - sy) * 0.05;
+      var aspect = camera.aspect, R = aspect < 1 ? 62 : aspect < 1.25 ? 54 : 46;
+      var ang = (RM ? 0.7 : t * 0.07) + sx * 0.7 + dragAng + (window.scrollY || 0) * 0.0006;
+      var H = 21 - sy * 6;
+      camera.position.set(Math.sin(ang) * R, H, Math.cos(ang) * R);
+      camera.lookAt(0, 7, 0);
+      pts.rotation.y = t * 0.03;
+      water.material.emissiveIntensity = 0.8 + Math.sin(t * 1.4) * 0.25;
+      glow.intensity = 1.2 + Math.sin(t * 0.9) * 0.2;
+      renderer.render(scene, camera);
+    }
+    function loop(now) { if (!running) return; draw(now); raf = requestAnimationFrame(loop); }
+    function start() { if (RM || running || !visible || document.hidden) return; running = true; raf = requestAnimationFrame(loop); }
+    function stop() { running = false; cancelAnimationFrame(raf); }
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function (es) { visible = es[0].isIntersecting; if (visible) start(); else stop(); }).observe(host);
+    }
+    document.addEventListener('visibilitychange', function () { if (document.hidden) stop(); else start(); });
+    if ('ResizeObserver' in window) new ResizeObserver(resize).observe(wrap); else window.addEventListener('resize', resize);
+    resize(); start();
+  })();
+})();
+</script>
+
+</body></html>
