@@ -1,0 +1,534 @@
+<!-- =========================================================
+ ROYAL GARDEN CITY — LAND → DEVELOPMENT → INTERIOR SCROLL HERO
+ Paste into a WordPress "Custom HTML" block.
+ • No libraries (pure SVG + JS) → fast, light, no WebGL faults
+ • Background city + trees are STATIC. Only the focus building animates.
+ • To use your real interior photo: set INTERIOR_IMAGE near the top of the <script>.
+========================================================= -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+<div class="rgc-hero" id="rgcHero">
+  <div class="rgc-chassis" id="rgcChassis">
+    <div class="rgc-viewport" id="rgcViewport">
+
+      <!-- STATIC BACKGROUND (never animates) -->
+      <div class="rgc-bg" aria-hidden="true">
+        <svg class="rgc-city" id="rgcCity" viewBox="0 0 1600 560" preserveAspectRatio="xMidYMax slice">
+          <defs>
+            <linearGradient id="rgcHaze" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#ff9a55" stop-opacity="0"/>
+              <stop offset="1" stop-color="#ff9a55" stop-opacity=".22"/>
+            </linearGradient>
+          </defs>
+        </svg>
+      </div>
+
+      <!-- FOCUS STAGE: land sketch + building -->
+      <svg class="rgc-stage" id="rgcStage" viewBox="-1000 -700 1600 950" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+        <defs>
+          <linearGradient id="rgcGlass" gradientUnits="userSpaceOnUse" x1="-160" y1="0" x2="130" y2="0">
+            <stop offset="0" stop-color="#c58d4e"/><stop offset=".28" stop-color="#4a4a55"/>
+            <stop offset=".55" stop-color="#1b2735"/><stop offset="1" stop-color="#0f1722"/>
+          </linearGradient>
+          <linearGradient id="rgcFin" gradientUnits="userSpaceOnUse" x1="-170" y1="0" x2="150" y2="0">
+            <stop offset="0" stop-color="#8c5a2a"/><stop offset=".3" stop-color="#f0c880"/>
+            <stop offset=".5" stop-color="#fff1c8"/><stop offset=".75" stop-color="#d99a4a"/><stop offset="1" stop-color="#8a5524"/>
+          </linearGradient>
+          <radialGradient id="rgcGlowG">
+            <stop offset="0" stop-color="#ffcf86" stop-opacity=".5"/>
+            <stop offset=".6" stop-color="#ffb35a" stop-opacity=".12"/>
+            <stop offset="1" stop-color="#ffb35a" stop-opacity="0"/>
+          </radialGradient>
+        </defs>
+        <ellipse id="rgcGlow" cx="0" cy="-200" rx="320" ry="430" fill="url(#rgcGlowG)" opacity="0"/>
+        <g id="rgcLand"></g>
+        <g id="rgcTowerWrap"><g id="rgcTower"></g></g>
+      </svg>
+
+      <!-- INTERIOR (revealed by zooming into the building) -->
+      <div class="rgc-interior" id="rgcInterior">
+        <div class="rgc-int-inner" id="rgcIntInner">
+          <svg viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+            <defs>
+              <linearGradient id="iSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3a4d7a"/><stop offset=".55" stop-color="#b98a7a"/><stop offset="1" stop-color="#e9bf8e"/></linearGradient>
+              <linearGradient id="iWood" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5a3a22"/><stop offset="1" stop-color="#2b1b10"/></linearGradient>
+              <linearGradient id="iFloor" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d4d1cb"/><stop offset="1" stop-color="#7b7875"/></linearGradient>
+              <linearGradient id="iConc" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#8d8d8a"/><stop offset="1" stop-color="#5b5b5a"/></linearGradient>
+              <linearGradient id="iCove" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffb85a" stop-opacity=".55"/><stop offset="1" stop-color="#ffb85a" stop-opacity="0"/></linearGradient>
+              <linearGradient id="iFloorGlow" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffb85a" stop-opacity=".6"/><stop offset="1" stop-color="#ffb85a" stop-opacity="0"/></linearGradient>
+              <radialGradient id="iGlow"><stop offset="0" stop-color="#ffc774" stop-opacity=".8"/><stop offset="1" stop-color="#ffc774" stop-opacity="0"/></radialGradient>
+              <radialGradient id="iVig" cx=".5" cy=".5" r=".75"><stop offset=".55" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".55"/></radialGradient>
+              <pattern id="iGroove" width="38" height="10" patternUnits="userSpaceOnUse"><rect width="2" height="10" fill="#000" opacity=".3"/></pattern>
+            </defs>
+            <rect width="1600" height="900" fill="#17120e"/>
+            <!-- ceiling + cove light -->
+            <rect width="1600" height="130" fill="#0d0b09"/>
+            <rect y="118" width="1060" height="10" fill="#ffb85a"/>
+            <rect y="128" width="1060" height="70" fill="url(#iCove)"/>
+            <!-- wood wall -->
+            <rect y="130" width="1060" height="510" fill="url(#iWood)"/>
+            <rect y="130" width="1060" height="510" fill="url(#iGroove)"/>
+            <rect x="560" y="330" width="380" height="230" fill="#22160d" opacity=".75"/>
+            <rect x="700" y="520" width="200" height="12" fill="#caa77a"/>
+            <rect x="716" y="532" width="6" height="30" fill="#caa77a"/><rect x="878" y="532" width="6" height="30" fill="#caa77a"/>
+            <rect x="680" y="486" width="34" height="46" rx="6" fill="#b9793a"/><rect x="760" y="486" width="34" height="46" rx="6" fill="#b9793a"/>
+            <rect x="810" y="486" width="34" height="46" rx="6" fill="#b9793a"/><rect x="890" y="486" width="34" height="46" rx="6" fill="#b9793a"/>
+            <!-- mezzanine -->
+            <rect y="235" width="650" height="48" fill="url(#iConc)"/>
+            <rect y="283" width="650" height="9" fill="#ffb85a"/>
+            <rect y="292" width="650" height="60" fill="url(#iCove)"/>
+            <rect y="170" width="650" height="65" fill="#9ec3e0" opacity=".12"/>
+            <path d="M0 170H650M0 235H650" stroke="#d6e6f2" stroke-opacity=".55" stroke-width="3"/>
+            <path d="M80 170V235M200 170V235M320 170V235M440 170V235M560 170V235" stroke="#d6e6f2" stroke-opacity=".4" stroke-width="2"/>
+            <rect x="40" y="196" width="150" height="40" rx="12" fill="#cfc9bf" opacity=".85"/>
+            <!-- column -->
+            <rect x="650" width="82" height="640" fill="url(#iConc)"/>
+            <!-- pendants -->
+            <g stroke="#cdbb95" stroke-width="2">
+              <line x1="800" y1="130" x2="800" y2="240"/><line x1="880" y1="130" x2="880" y2="285"/><line x1="960" y1="130" x2="960" y2="255"/>
+              <line x1="170" y1="130" x2="170" y2="470"/><line x1="360" y1="130" x2="360" y2="440"/>
+            </g>
+            <circle cx="800" cy="256" r="90" fill="url(#iGlow)" opacity=".55"/><circle cx="880" cy="300" r="90" fill="url(#iGlow)" opacity=".55"/><circle cx="960" cy="270" r="90" fill="url(#iGlow)" opacity=".55"/>
+            <ellipse cx="800" cy="250" rx="26" ry="16" fill="#f3c777"/><ellipse cx="880" cy="295" rx="26" ry="16" fill="#f3c777"/><ellipse cx="960" cy="265" rx="26" ry="16" fill="#f3c777"/>
+            <ellipse cx="170" cy="490" rx="44" ry="34" fill="#e8d3a8" stroke="#a88e5c" stroke-width="2"/><ellipse cx="360" cy="458" rx="44" ry="34" fill="#e8d3a8" stroke="#a88e5c" stroke-width="2"/>
+            <!-- window wall + skyline -->
+            <rect x="1060" width="540" height="640" fill="url(#iSky)"/>
+            <path fill="#2a2f46" opacity=".9" d="M1060 640V470h34V430h30V500h26V420h38V480h28V400h34V470h30V440h40V510h32V450h30V490h36V430h34V640Z"/>
+            <path fill="#171b2c" opacity=".9" d="M1060 640V540h50V510h36V560h44V520h40V570h50V500h42V550h48V530h40V580h52V540h38V640Z"/>
+            <path d="M1060 0V640M1150 0V640M1240 0V640M1330 0V640M1420 0V640M1510 0V640M1596 0V640M1060 200H1600M1060 420H1600" stroke="#10141a" stroke-width="8"/>
+            <rect x="1060" y="640" width="540" height="16" fill="#10141a"/>
+            <!-- floor -->
+            <rect y="640" width="1600" height="260" fill="url(#iFloor)"/>
+            <rect x="1060" y="656" width="540" height="244" fill="url(#iSky)" opacity=".2"/>
+            <path d="M0 705Q400 665 800 725T1600 700M0 790Q500 750 900 805T1600 780" stroke="#8a8780" stroke-width="2" fill="none" opacity=".45"/>
+            <!-- kitchen island -->
+            <rect x="-20" y="684" width="720" height="146" fill="#ece9e4"/>
+            <rect x="-20" y="650" width="720" height="38" fill="#fbfaf7"/>
+            <path d="M40 690L180 830M260 690L330 830M470 690L600 830" stroke="#9a9690" stroke-width="2" opacity=".5"/>
+            <rect x="-20" y="830" width="720" height="8" fill="#ffbd5e"/>
+            <rect x="-20" y="838" width="720" height="60" fill="url(#iFloorGlow)"/>
+            <!-- rug + sofa -->
+            <rect x="740" y="800" width="760" height="100" rx="8" fill="#b9ad97" opacity=".9"/>
+            <ellipse cx="995" cy="812" rx="260" ry="16" fill="#000" opacity=".25"/>
+            <rect x="760" y="650" width="470" height="62" rx="14" fill="#a39d92"/>
+            <rect x="760" y="690" width="470" height="112" rx="14" fill="#8f897f"/>
+            <rect x="790" y="700" width="120" height="62" rx="10" fill="#6a5d4f"/><rect x="1090" y="700" width="120" height="62" rx="10" fill="#6a5d4f"/>
+            <rect x="1290" y="790" width="300" height="56" rx="12" fill="#9b958a"/>
+            <!-- fire bowls -->
+            <ellipse cx="1010" cy="874" rx="72" ry="18" fill="#171717"/><ellipse cx="1010" cy="858" rx="24" ry="14" fill="#ff9a3c"/><circle cx="1010" cy="850" r="60" fill="url(#iGlow)" opacity=".7"/>
+            <ellipse cx="1190" cy="846" rx="52" ry="14" fill="#171717"/><ellipse cx="1190" cy="834" rx="18" ry="11" fill="#ff9a3c"/><circle cx="1190" cy="826" r="46" fill="url(#iGlow)" opacity=".7"/>
+            <!-- plants -->
+            <rect x="1008" y="596" width="38" height="46" fill="#26262a"/>
+            <g fill="#2c6a43"><ellipse cx="1027" cy="560" rx="22" ry="44"/><ellipse cx="1004" cy="580" rx="14" ry="34" transform="rotate(-25 1004 580)"/><ellipse cx="1050" cy="580" rx="14" ry="34" transform="rotate(25 1050 580)"/></g>
+            <rect width="1600" height="900" fill="url(#iVig)"/>
+          </svg>
+        </div>
+      </div>
+      <div class="rgc-scrim" id="rgcScrim"></div>
+
+      <!-- TEXT: all three stack in the exact same box → always perfectly aligned -->
+      <div class="rgc-copy" id="rgcCopy">
+        <div class="rgc-step is-on">
+          <span class="rgc-eyebrow">01 &mdash; LAND</span>
+          <div class="rgc-h" role="heading" aria-level="2">Your Land.<br>Our Foundation.</div>
+          <div class="rgc-p">Verified, well-located plots and land opportunities &mdash; sourced, surveyed and secured with complete legal clarity.</div>
+        </div>
+        <div class="rgc-step">
+          <span class="rgc-eyebrow">02 &mdash; DEVELOPMENT</span>
+          <div class="rgc-h" role="heading" aria-level="2">Your Landmark.<br>Built to Last.</div>
+          <div class="rgc-p">Architect-led residential and commercial development, from structure to handover &mdash; delivered with uncompromising quality.</div>
+        </div>
+        <div class="rgc-step">
+          <span class="rgc-eyebrow">03 &mdash; INTERIOR</span>
+          <div class="rgc-h" role="heading" aria-level="2">Your Elegant<br>Interior.</div>
+          <div class="rgc-p">Bespoke interior design and fit-out &mdash; marble, warm timber and curated lighting. Royal Garden City, Jasimuddin Road, Uttara &bull; Dhaka.</div>
+          <a class="rgc-btn" href="https://royalgardencity.com/contact/"><span>Get Consultation Now</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+        </div>
+      </div>
+
+      <div class="rgc-rail" id="rgcRail" aria-hidden="true">
+        <div class="rgc-track"><i id="rgcFill"></i></div>
+        <div class="rgc-rail-l"><span class="is-on">LAND</span><span>DEVELOPMENT</span><span>INTERIOR</span></div>
+      </div>
+      <div class="rgc-cue" id="rgcCue" aria-hidden="true"><span>SCROLL TO EXPLORE</span><div class="rgc-cue-bar"><div class="rgc-cue-drop"></div></div></div>
+    </div>
+  </div>
+</div>
+
+<style>
+.rgc-hero,.rgc-hero *{box-sizing:border-box}
+.rgc-hero{position:relative!important;width:100vw!important;max-width:none!important;left:50%!important;margin-left:-50vw!important;margin-right:-50vw!important;padding:0!important;overflow:clip!important;background:#070d14!important;color:#fff;font-family:'Inter',Arial,sans-serif!important;isolation:isolate}
+.rgc-chassis{position:relative;width:100%;height:560vh;background:#070d14}
+.rgc-viewport{position:sticky;top:0;width:100%;height:100vh;height:100svh;min-height:480px;overflow:hidden;background:#070d14}
+
+/* static background */
+.rgc-bg{position:absolute;inset:0;z-index:1;background:
+  radial-gradient(ellipse 60% 34% at 66% 62%,rgba(255,160,85,.34),transparent 72%),
+  linear-gradient(180deg,#060b14 0%,#10203a 36%,#34405a 54%,#9a6a50 62%,#0b1520 62.1%,#070d14 100%)}
+.rgc-city{position:absolute;left:0;right:0;top:0;height:62%;width:100%;display:block}
+.rgc-stage{position:absolute;inset:0;width:100%;height:100%;z-index:2;display:block;pointer-events:none}
+
+/* interior */
+.rgc-interior{position:absolute;inset:0;z-index:4;display:none;overflow:hidden;background:#17120e;-webkit-clip-path:circle(0px at 50% 50%);clip-path:circle(0px at 50% 50%)}
+.rgc-int-inner{position:absolute;inset:0;transform-origin:50% 50%;background-size:cover;background-position:center}
+.rgc-int-inner svg{position:absolute;inset:0;width:100%;height:100%;display:block}
+.rgc-scrim{position:absolute;inset:0;z-index:5;pointer-events:none;opacity:0;transition:opacity .6s ease;background:linear-gradient(90deg,rgba(4,7,11,.86) 0%,rgba(4,7,11,.55) 38%,transparent 70%)}
+.rgc-scrim.is-on{opacity:1}
+
+/* text */
+.rgc-copy{position:absolute;z-index:8;left:clamp(24px,6vw,120px);top:50%;width:min(480px,40vw);height:360px;margin-top:-180px;pointer-events:none}
+.rgc-step{position:absolute;left:0;top:0;width:100%;opacity:0;transform:translateY(18px);transition:opacity .55s ease,transform .55s cubic-bezier(.16,1,.3,1);will-change:opacity,transform}
+.rgc-step.is-on{opacity:1;transform:none;pointer-events:auto}
+.rgc-eyebrow{display:block;margin:0 0 16px;color:#dfbd83;font-family:'Cinzel',Georgia,serif;font-size:12px;font-weight:700;letter-spacing:.26em}
+.rgc-h{margin:0 0 18px!important;color:#fff!important;font-family:'Cinzel',Georgia,serif!important;font-weight:700!important;font-size:clamp(32px,4.2vw,64px)!important;line-height:1.1!important;letter-spacing:.03em!important;text-shadow:0 3px 24px rgba(0,0,0,.55)}
+.rgc-p{margin:0 0 26px!important;max-width:430px;color:#cfd8e0!important;font-size:15px!important;line-height:1.75!important;font-weight:400!important;text-shadow:0 2px 12px rgba(0,0,0,.6)}
+.rgc-btn{display:inline-flex;align-items:center;justify-content:center;gap:12px;min-height:50px;padding:14px 26px;border:1px solid rgba(255,255,255,.18);border-radius:5px;background:linear-gradient(135deg,#f0d9b2,#c5a475 62%,#a78352);color:#111722!important;font-family:'Cinzel',Georgia,serif;font-size:11px;font-weight:700;letter-spacing:.12em;text-decoration:none!important;box-shadow:0 8px 24px rgba(197,164,117,.25);transition:transform .25s ease,filter .25s ease}
+.rgc-btn:hover{transform:translateY(-2px);filter:brightness(1.08)}
+
+/* progress rail + cue */
+.rgc-rail{position:absolute;z-index:8;left:clamp(24px,6vw,120px);bottom:clamp(22px,4.5vh,46px);width:min(480px,40vw);pointer-events:none}
+.rgc-track{position:relative;height:1px;background:rgba(255,255,255,.22);overflow:hidden}
+.rgc-track i{position:absolute;inset:0;background:#dfbd83;transform-origin:0 50%;transform:scaleX(0)}
+.rgc-rail-l{display:flex;justify-content:space-between;margin-top:11px}
+.rgc-rail-l span{color:rgba(255,255,255,.45);font-size:10px;font-weight:600;letter-spacing:.2em;transition:color .35s ease}
+.rgc-rail-l span.is-on{color:#dfbd83}
+.rgc-cue{position:absolute;z-index:8;right:clamp(20px,3vw,40px);bottom:clamp(22px,4.5vh,46px);display:flex;flex-direction:column;align-items:center;gap:9px;pointer-events:none;transition:opacity .4s ease}
+.rgc-cue span{color:#d1d9e1;font-size:9px;font-weight:600;letter-spacing:.2em;text-shadow:0 2px 10px #07111d}
+.rgc-cue-bar{width:1px;height:28px;background:rgba(255,255,255,.25);overflow:hidden}
+.rgc-cue-drop{width:100%;height:100%;background:linear-gradient(180deg,#e3c18b,transparent);animation:rgcDrop 1.5s ease-in-out infinite}
+@keyframes rgcDrop{from{transform:translateY(-100%)}to{transform:translateY(100%)}}
+
+@media (max-width:899px){
+  .rgc-chassis{height:500vh}
+  .rgc-copy{left:22px;right:22px;width:auto;top:auto;bottom:70px;height:215px;margin:0}
+  .rgc-eyebrow{font-size:10px;margin-bottom:10px}
+  .rgc-h{font-size:clamp(26px,8vw,38px)!important;margin-bottom:10px!important}
+  .rgc-p{font-size:13px!important;line-height:1.6!important;margin-bottom:14px!important;max-width:none}
+  .rgc-btn{width:100%;min-height:46px;padding:12px 16px;font-size:10px}
+  .rgc-rail{left:22px;right:22px;width:auto;bottom:24px}
+  .rgc-rail-l span{font-size:9px;letter-spacing:.14em}
+  .rgc-cue{display:none}
+  .rgc-scrim{background:linear-gradient(0deg,rgba(4,7,11,.9) 0%,rgba(4,7,11,.6) 40%,transparent 75%)}
+}
+@media (prefers-reduced-motion:reduce){.rgc-cue-drop{animation:none}.rgc-step,.rgc-btn,.rgc-scrim{transition:none}}
+
+body:has(#rgcHero) header.site-header,body:has(#rgcHero) #masthead,body:has(#rgcHero) .ast-primary-header-bar,body:has(#rgcHero) .ast-main-header-wrap,body:has(#rgcHero) .elementor-location-header{background:transparent!important;box-shadow:none!important}
+</style>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ===== OPTIONAL: paste your interior photo URL (WordPress Media Library) ===== */
+  var INTERIOR_IMAGE = '';   // e.g. 'https://royalgardencity.com/wp-content/uploads/2026/10/interior.jpg'
+
+  var root = document.getElementById('rgcHero');
+  if (!root || root.getAttribute('data-ready')) return;
+  root.setAttribute('data-ready', '1');
+
+  var $ = function (id) { return document.getElementById(id); };
+  var chassis = $('rgcChassis'), viewport = $('rgcViewport'), stage = $('rgcStage'),
+      landG = $('rgcLand'), wrapG = $('rgcTowerWrap'), towerG = $('rgcTower'), glow = $('rgcGlow'),
+      interior = $('rgcInterior'), intInner = $('rgcIntInner'), scrim = $('rgcScrim'),
+      steps = root.querySelectorAll('.rgc-step'), railSpans = root.querySelectorAll('.rgc-rail-l span'),
+      fill = $('rgcFill'), cue = $('rgcCue'), city = $('rgcCity');
+  var NS = 'http://www.w3.org/2000/svg', C = 0.8660254;
+  var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------- helpers ---------- */
+  function r(n) { return Math.round(n * 10) / 10; }
+  function clamp(v, a, b) { return v < a ? a : (v > b ? b : v); }
+  function smooth(t) { t = clamp(t, 0, 1); return t * t * (3 - 2 * t); }
+  function lerp(a, b, t) { return a + (b - a) * t; }
+  function rng(seed) { var s = seed % 2147483647; if (s <= 0) s += 2147483646; return function () { s = s * 16807 % 2147483647; return (s - 1) / 2147483646; }; }
+  function el(tag, attrs, parent) {
+    var e = document.createElementNS(NS, tag);
+    for (var k in attrs) if (Object.prototype.hasOwnProperty.call(attrs, k)) e.setAttribute(k, attrs[k]);
+    if (parent) parent.appendChild(e);
+    return e;
+  }
+  /* isometric projection: world (x,y,z) → screen */
+  function X(x, y) { return (x - y) * C; }
+  function Y(x, y, z) { return (x + y) * 0.5 - (z || 0); }
+  function P(x, y, z) { return r(X(x, y)) + ',' + r(Y(x, y, z)); }
+  function poly(pts) { var d = ''; for (var i = 0; i < pts.length; i++) d += (i ? 'L' : 'M') + P(pts[i][0], pts[i][1], pts[i][2]); return d + 'Z'; }
+  function ring(x0, y0, x1, y1, z) { z = z || 0; return poly([[x0, y0, z], [x1, y0, z], [x1, y1, z], [x0, y1, z]]); }
+
+  /* ---------- STATIC BACKGROUND: city + trees (generated once, never animated) ---------- */
+  (function buildCity() {
+    var rnd = rng(7), far = '', near = '', win = '', x, w, h, wx, wy;
+    x = -20; while (x < 1640) { w = 26 + rnd() * 44; h = 60 + rnd() * 150; far += 'M' + r(x) + ',560V' + r(560 - h) + 'h' + r(w) + 'V560Z'; x += w + rnd() * 6; }
+    x = -10; while (x < 1640) {
+      w = 20 + rnd() * 34; h = 30 + rnd() * 90; near += 'M' + r(x) + ',560V' + r(560 - h) + 'h' + r(w) + 'V560Z';
+      for (wy = 560 - h + 8; wy < 548; wy += 14) for (wx = x + 5; wx < x + w - 6; wx += 9) if (rnd() < 0.14) win += 'M' + r(wx) + ',' + r(wy) + 'h3v4h-3Z';
+      x += w + rnd() * 8;
+    }
+    el('path', { d: far, fill: '#16263a', opacity: '.85' }, city);
+    el('path', { d: near, fill: '#0f1b2a' }, city);
+    el('path', { d: win, fill: '#ffcf8a', opacity: '.5' }, city);
+    el('rect', { x: 0, y: 420, width: 1600, height: 140, fill: 'url(#rgcHaze)' }, city);
+    var tg = el('g', { fill: '#0a1a1c' }, city), i, cx, cy, rr;
+    for (i = 0; i < 16; i++) { cx = rnd() * 270; cy = 505 + rnd() * 55; rr = 20 + rnd() * 28; el('circle', { cx: r(cx), cy: r(cy), r: r(rr) }, tg); }
+    for (i = 0; i < 16; i++) { cx = 1330 + rnd() * 280; cy = 505 + rnd() * 55; rr = 20 + rnd() * 28; el('circle', { cx: r(cx), cy: r(cy), r: r(rr) }, tg); }
+  })();
+
+  /* ---------- LAND SKETCH (draws itself with scroll) ---------- */
+  var draws = [];
+  function addPath(parent, d, a, b, attrs) {
+    var base = { d: d, fill: 'none', pathLength: '1', 'stroke-linecap': 'round', 'stroke-linejoin': 'round', stroke: '#e8e2d2', 'stroke-width': '1.1' };
+    for (var k in attrs) base[k] = attrs[k];
+    var p = el('path', base, parent);
+    p.style.strokeDasharray = '1'; p.style.strokeDashoffset = '1'; p.style.visibility = 'hidden';
+    draws.push({ el: p, a: a, b: b, v: -1 });
+    return p;
+  }
+  /* bare branching tree sketch */
+  function treePath(x, y, s, seed) {
+    var rnd = rng(seed), d = '';
+    function br(px, py, ang, len, depth) {
+      var nx = px + Math.sin(ang) * len, ny = py - Math.cos(ang) * len;
+      d += 'M' + r(px) + ',' + r(py) + 'L' + r(nx) + ',' + r(ny);
+      if (depth <= 0) return;
+      var n = depth >= 4 ? 3 : 2;
+      for (var k = 0; k < n; k++) br(nx, ny, ang + (rnd() - 0.5) * 1.5, len * (0.62 + rnd() * 0.15), depth - 1);
+    }
+    br(X(x, y), Y(x, y, 0), 0, 34 * s, 5);
+    return d;
+  }
+
+  var plotFill = el('path', { d: ring(-260, -190, 260, 190), fill: '#0d1822', opacity: '0' }, null);
+  var poolFill = el('path', { d: ring(150, -120, 235, -80), fill: '#1c3b52', opacity: '0' }, null);
+  (function buildLand() {
+    var k, xx, yy, d, i;
+    for (k = 0; k < 11; k++) {                       /* contour lines */
+      d = ''; var base = -560 + k * 105;
+      for (xx = -1400; xx <= 1400; xx += 70) {
+        yy = base + 46 * Math.sin(xx * 0.0042 + k * 0.9) + 24 * Math.sin(xx * 0.0113 + k * 2.1) + xx * 0.12 * (k % 2 ? 0.4 : -0.35);
+        d += (xx === -1400 ? 'M' : 'L') + xx + ',' + r(yy);
+      }
+      addPath(landG, d, 0, 0.55, { stroke: '#8fa0b0', 'stroke-width': '.7', opacity: '.3' });
+    }
+    landG.appendChild(plotFill);
+    landG.appendChild(poolFill);
+    addPath(landG, ring(-260, -190, 260, 190), 0.05, 0.4, { 'stroke-width': '1.4' });                       /* plot boundary */
+    addPath(landG, poly([[-420, 225, 0], [420, 225, 0]]), 0.12, 0.42, { 'stroke-width': '1' });               /* road */
+    addPath(landG, poly([[-420, 285, 0], [420, 285, 0]]), 0.14, 0.45, { 'stroke-width': '1' });
+    d = ring(-260, 40, -200, 150);                                                                              /* parking */
+    for (yy = 48; yy < 150; yy += 8) d += 'M' + P(-260, yy, 0) + 'L' + P(-200, yy, 0);
+    addPath(landG, d, 0.3, 0.55, { 'stroke-width': '.9' });
+    var pav = [[-205, 100], [-175, 116], [-145, 132], [-115, 148], [-85, 164], [60, 135], [90, 150], [120, 165], [150, 180]];
+    d = ''; for (i = 0; i < pav.length; i++) d += ring(pav[i][0], pav[i][1], pav[i][0] + 22, pav[i][1] + 22);   /* pavers */
+    addPath(landG, d, 0.4, 0.75, { 'stroke-width': '.9' });
+    d = ring(150, -120, 235, -80) + ring(156, -114, 229, -86);                                                  /* pool */
+    addPath(landG, d, 0.5, 0.8, { 'stroke-width': '1' });
+    d = ring(188, 8, 216, 36);                                                                                  /* fire pit + chairs */
+    d += 'M' + P(202 + 8, 22, 0); for (i = 1; i <= 12; i++) d += 'L' + P(202 + 8 * Math.cos(i / 12 * 6.2832), 22 + 8 * Math.sin(i / 12 * 6.2832), 0);
+    d += ring(168, 14, 178, 24) + ring(226, 14, 236, 24) + ring(197, -22, 207, -12) + ring(197, 48, 207, 58);
+    addPath(landG, d, 0.55, 0.82, { 'stroke-width': '1' });
+    var T = [[200, -190, 1.3], [140, -200, 1.15], [250, -190, 1.2], [330, -140, 1.3], [300, -40, 1.15],
+             [-230, 150, 1.35], [-255, 70, 1.2], [-195, 185, 1.15], [-250, -60, 1.1], [-310, 10, 1.1]];
+    for (i = 0; i < T.length; i++) {
+      var a = 0.22 + i * 0.05;
+      addPath(landG, treePath(T[i][0], T[i][1], T[i][2], 11 + i * 17), a, Math.min(1, a + 0.35), { stroke: '#d8d2c0', 'stroke-width': '.7', opacity: '.78' });
+    }
+    addPath(landG, ring(-118, -88, 118, 88) + ring(-88, -62, 88, 62), 0.72, 1, { stroke: '#e7c27d', 'stroke-width': '1.8' });  /* your landmark footprint */
+  })();
+
+  var lastLp = -1;
+  function drawAll(lp) {
+    for (var i = 0; i < draws.length; i++) {
+      var d = draws[i], v = smooth((lp - d.a) / (d.b - d.a));
+      if (v === d.v) continue; d.v = v;
+      if (v <= 0) { d.el.style.visibility = 'hidden'; }
+      else if (v >= 1) { d.el.style.visibility = 'visible'; d.el.style.strokeDasharray = 'none'; d.el.style.strokeDashoffset = '0'; }
+      else { d.el.style.visibility = 'visible'; d.el.style.strokeDasharray = '1'; d.el.style.strokeDashoffset = String(1 - v); }
+    }
+    plotFill.setAttribute('opacity', String(0.92 * smooth((lp - 0.55) / 0.4)));
+    poolFill.setAttribute('opacity', String(0.85 * smooth((lp - 0.8) / 0.2)));
+  }
+
+  /* ---------- THE BUILDING ---------- */
+  var HX = 88, HY = 62, FH = 22, PODH = 30, NF = 20, O = 4, SP = 9;
+
+  function bushes(parent, list) {
+    list.sort(function (a, b) { return (a[0] + a[1]) - (b[0] + b[1]); });
+    var g = el('g', {}, parent);
+    for (var i = 0; i < list.length; i++) {
+      var b = list[i], cx = X(b[0], b[1]), cy = Y(b[0], b[1], b[2]), rr = b[3];
+      el('circle', { cx: r(cx), cy: r(cy), r: r(rr), fill: '#2b6a44' }, g);
+      el('circle', { cx: r(cx - rr * 0.25), cy: r(cy - rr * 0.3), r: r(rr * 0.58), fill: '#3f8c55' }, g);
+    }
+  }
+
+  function makeFloor(parent, hx, hy, z0, h, seed, o) {
+    o = o || {};
+    var rnd = rng(seed), z1 = z0 + h, zs = z0 + 3, i, tt, d;
+    var g = el('g', {}, parent);
+    var wire = el('g', { fill: 'none', stroke: '#f2d08f', 'stroke-width': '1', 'stroke-linejoin': 'round' }, g);
+    var solid = el('g', {}, g);
+    var L = [[-hx, hy, z0], [hx, hy, z0], [hx, hy, z1], [-hx, hy, z1]];
+    var R = [[hx, -hy, z0], [hx, hy, z0], [hx, hy, z1], [hx, -hy, z1]];
+    el('path', { d: poly(L) + poly(R) }, wire);
+    if (o.roof) {                                           /* roof / terrace plane */
+      var rz = o.roofZ === undefined ? z1 : o.roofZ;
+      el('path', { d: poly([[-hx, -hy, rz], [hx, -hy, rz], [hx, hy, rz], [-hx, hy, rz]]), fill: o.roof }, solid);
+    }
+    var faceFill = o.rail ? 'rgba(170,205,235,.16)' : 'url(#rgcGlass)';
+    el('path', { d: poly(L), fill: faceFill }, solid);
+    el('path', { d: poly(R), fill: faceFill }, solid);
+    if (!o.rail) {                                          /* lit windows */
+      var dl = '', dr = '', q = o.lit || 0.18;
+      for (tt = -hx + 4.5; tt < hx; tt += SP) if (rnd() < q) dl += poly([[tt - 3, hy + 0.2, z0 + 6], [tt + 3, hy + 0.2, z0 + 6], [tt + 3, hy + 0.2, z1 - 5], [tt - 3, hy + 0.2, z1 - 5]]);
+      for (tt = -hy + 4.5; tt < hy; tt += SP) if (rnd() < q) dr += poly([[hx + 0.2, tt - 3, z0 + 6], [hx + 0.2, tt + 3, z0 + 6], [hx + 0.2, tt + 3, z1 - 5], [hx + 0.2, tt - 3, z1 - 5]]);
+      if (dl) el('path', { d: dl, fill: '#ffd48a', opacity: '.85' }, solid);
+      if (dr) el('path', { d: dr, fill: '#ffd48a', opacity: '.55' }, solid);
+    }
+    if (o.bush) {                                           /* greenery */
+      var bl = [];
+      if (o.bush === 'edge') {
+        for (tt = -hx + 6; tt < hx; tt += 15) bl.push([tt, hy - 9 + rnd() * 4, z1 + 3, 6 + rnd() * 2]);
+        for (tt = -hy + 6; tt < hy; tt += 15) bl.push([hx - 9 + rnd() * 4, tt, z1 + 3, 6 + rnd() * 2]);
+      } else {
+        for (i = 0; i < 26; i++) { var rr = 8 + rnd() * 7; bl.push([-hx + 10 + rnd() * (2 * hx - 20), -hy + 10 + rnd() * (2 * hy - 20), zs + rr * 0.5, rr]); }
+      }
+      bushes(solid, bl);
+    }
+    if (o.planter) {                                        /* hanging planter on the left corner */
+      bushes(solid, [[-hx - O + 2, hy + O, zs + 5, 7], [-hx - O + 6, hy + O + 1, zs + 8, 6], [-hx - O - 2, hy + O - 3, zs + 10, 5.5]]);
+    }
+    /* slab strips + ledge */
+    el('path', { d: poly([[-hx - O, hy + O, z0], [hx + O, hy + O, z0], [hx + O, hy + O, zs], [-hx - O, hy + O, zs]]) + poly([[hx + O, -hy - O, z0], [hx + O, hy + O, z0], [hx + O, hy + O, zs], [hx + O, -hy - O, zs]]), fill: '#10161d' }, solid);
+    el('path', { d: poly([[-hx - O, hy + O, zs], [hx + O, hy + O, zs], [hx + O, -hy - O, zs], [hx, -hy - O, zs], [hx, hy, zs], [-hx - O, hy, zs]]), fill: '#d8b878', opacity: '.92' }, solid);
+    /* gold fins */
+    var fz = z1 + (o.finExtra || 0);
+    d = '';
+    for (tt = -hx; tt <= hx + 0.1; tt += SP) d += 'M' + P(tt, hy + O, zs) + 'L' + P(tt, hy + O, fz);
+    el('path', { d: d, stroke: 'url(#rgcFin)', 'stroke-width': '2', fill: 'none' }, solid);
+    d = '';
+    for (tt = -hy; tt <= hy + 0.1; tt += SP) d += 'M' + P(hx + O, tt, zs) + 'L' + P(hx + O, tt, fz);
+    el('path', { d: d, stroke: 'url(#rgcFin)', 'stroke-width': '2', fill: 'none', opacity: '.85' }, solid);
+    if (o.pergola) {                                        /* crown: top rim + slats */
+      d = 'M' + P(-hx - O, hy + O, fz) + 'L' + P(hx + O, hy + O, fz) + 'L' + P(hx + O, -hy - O, fz);
+      for (tt = -hx; tt <= hx + 0.1; tt += SP) d += 'M' + P(tt, hy + O, fz) + 'L' + P(tt, hy + O - 26, fz);
+      for (tt = -hy; tt <= hy + 0.1; tt += SP) d += 'M' + P(hx + O, tt, fz) + 'L' + P(hx + O - 26, tt, fz);
+      el('path', { d: d, stroke: 'url(#rgcFin)', 'stroke-width': '2.4', fill: 'none' }, solid);
+    }
+    return { g: g, wire: wire, solid: solid, f: -1 };
+  }
+
+  var podium = makeFloor(towerG, 118, 88, 0, PODH, 3, { roof: '#212c37', bush: 'edge' });
+  var floors = [];
+  for (var fi = 0; fi < NF; fi++) floors.push(makeFloor(towerG, HX, HY, PODH + fi * FH, FH, 40 + fi * 13, { planter: fi % 4 === 1 }));
+  var crown = makeFloor(towerG, HX, HY, PODH + NF * FH, 17, 999, { rail: true, roof: '#1d4630', roofZ: PODH + NF * FH + 3, bush: 'roof', finExtra: 0, pergola: true });
+
+  function setFloor(fl, f) {
+    if (fl.f === f) return; fl.f = f;
+    if (f <= 0) { fl.g.style.display = 'none'; return; }
+    fl.g.style.display = '';
+    fl.g.style.opacity = String(smooth(f * 1.8));
+    fl.g.setAttribute('transform', 'translate(0 ' + r(-(1 - f) * 34) + ')');
+    var so = smooth((f - 0.4) / 0.6);
+    fl.solid.style.opacity = String(so);
+    fl.wire.style.opacity = String(1 - 0.75 * so);
+  }
+
+  /* ---------- interior setup ---------- */
+  if (INTERIOR_IMAGE) {
+    intInner.style.backgroundImage = 'url("' + INTERIOR_IMAGE.replace(/"/g, '%22') + '")';
+    var isv = intInner.querySelector('svg'); if (isv) isv.style.display = 'none';
+  }
+
+  /* ---------- layout ---------- */
+  var vw = 0, vh = 0, mobile = false, vbX = 0, vbY = 0, vbW = 0, vbH = 0;
+  var FOC = { x: X(HX * 0 + (-HX + SP * 12 + SP / 2), HY + O), y: Y(-HX + SP * 12 + SP / 2, HY + O, PODH + 8 * FH + 12) };
+  function layout() {
+    vw = viewport.clientWidth; vh = viewport.clientHeight; if (!vw || !vh) return false;
+    mobile = vw < 900;
+    var s, ax, ay;
+    if (mobile) { s = Math.min(vw * 1.1 / 780, (vh - 330) / 790); s = Math.max(s, 0.3); ax = 0.5; ay = (40 + 562 * s) / vh; }
+    else { s = Math.min(vh / 950, vw * 0.56 / 780); ax = 0.66; ay = 0.70; }
+    vbW = vw / s; vbH = vh / s; vbX = -ax * vbW; vbY = -ay * vbH;
+    stage.setAttribute('viewBox', r(vbX) + ' ' + r(vbY) + ' ' + r(vbW) + ' ' + r(vbH));
+    return true;
+  }
+
+  /* ---------- per-frame update ---------- */
+  var lastStep = -1, lastLo = -1, lastCue = -1;
+  function update(p) {
+    var lp = clamp(p / 0.2, 0, 1);
+    if (lp !== lastLp) { lastLp = lp; drawAll(lp); }
+
+    setFloor(podium, smooth((p - 0.19) / 0.07));
+    for (var i = 0; i < floors.length; i++) setFloor(floors[i], smooth((p - (0.215 + i * 0.0185)) / 0.045));
+    setFloor(crown, smooth((p - 0.6) / 0.06));
+
+    var zt = clamp((p - 0.74) / 0.26, 0, 1), z2 = smooth(zt);
+
+    var lo = lerp(1, 0.5, smooth((p - 0.22) / 0.25)) * (1 - smooth(zt / 0.3));
+    if (lo !== lastLo) { lastLo = lo; landG.style.opacity = String(lo); }
+    glow.setAttribute('opacity', String(smooth((p - 0.55) / 0.2) * (1 - smooth(zt / 0.4))));
+
+    /* zoom INTO the building only (background untouched) */
+    if (zt <= 0) { wrapG.removeAttribute('transform'); }
+    else {
+      var S = Math.exp(Math.log(18) * z2);
+      var cx = lerp(FOC.x, vbX + vbW / 2, z2), cy = lerp(FOC.y, vbY + vbH / 2, z2);
+      wrapG.setAttribute('transform', 'translate(' + r(cx) + ' ' + r(cy) + ') scale(' + S.toFixed(4) + ') translate(' + r(-FOC.x) + ' ' + r(-FOC.y) + ')');
+    }
+
+    /* interior reveal */
+    var rv = smooth((zt - 0.5) / 0.42);
+    if (rv <= 0) { if (interior.style.display !== 'none') interior.style.display = 'none'; }
+    else {
+      if (interior.style.display !== 'block') interior.style.display = 'block';
+      var rad = rv * (Math.sqrt(vw * vw + vh * vh) / 2 + 12);
+      var cp = 'circle(' + r(rad) + 'px at 50% 50%)';
+      interior.style.clipPath = cp; interior.style.webkitClipPath = cp;
+      intInner.style.transform = 'scale(' + (1.2 - 0.2 * rv).toFixed(4) + ')';
+    }
+    var hideStage = rv >= 1 ? 'hidden' : 'visible';
+    if (stage.style.visibility !== hideStage) stage.style.visibility = hideStage;
+
+    /* text steps (all in one identical box → always aligned) */
+    var st = p < 0.2 ? 0 : (p < 0.86 ? 1 : 2);
+    if (st !== lastStep) {
+      lastStep = st;
+      for (var k = 0; k < steps.length; k++) steps[k].classList.toggle('is-on', k === st);
+      for (k = 0; k < railSpans.length; k++) railSpans[k].classList.toggle('is-on', k === st);
+      scrim.classList.toggle('is-on', st === 2);
+    }
+    fill.style.transform = 'scaleX(' + p.toFixed(4) + ')';
+    var cv = p < 0.02 ? 1 : 0;
+    if (cv !== lastCue) { lastCue = cv; cue.style.opacity = String(cv); }
+  }
+
+  /* ---------- scroll loop (runs only while something is moving) ---------- */
+  var target = 0, current = 0, raf = 0, visible = true;
+  function tick() {
+    raf = 0;
+    current = reduced ? target : current + (target - current) * 0.14;
+    if (Math.abs(target - current) < 0.0003) current = target;
+    update(current);
+    if (current !== target) raf = requestAnimationFrame(tick);
+  }
+  function onScroll() {
+    if (!visible) return;
+    var rect = chassis.getBoundingClientRect();
+    var max = chassis.offsetHeight - vh;
+    target = max > 0 ? clamp(-rect.top / max, 0, 1) : 0;
+    if (!raf) raf = requestAnimationFrame(tick);
+  }
+  function onResize() { if (layout()) { lastLo = -1; onScroll(); if (!raf) raf = requestAnimationFrame(tick); } }
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onResize, { passive: true });
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(function (e) { visible = e[0].isIntersecting; if (visible) onScroll(); }, { rootMargin: '200px' }).observe(chassis);
+  }
+  layout(); onScroll(); current = target; update(current);
+  window.addEventListener('load', onResize);
+})();
+</script>
